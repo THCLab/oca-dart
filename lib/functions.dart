@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:oca_dart/exceptions.dart';
 import 'package:oca_dart/widget_data.dart';
 import 'dart:ui';
 import 'custom_widgets/date_picker.dart' as show_date_picker_fun;
@@ -17,10 +18,16 @@ Future<Map<dynamic, dynamic>> getMapData(String path) async{
 }
 
 void parseCells(List cellsList, template, layout){
-  Map<dynamic, dynamic> cells = cellsList[0];
-  for(var key in cells.keys){
-    List keys = cells[key];
-    parseTree(template, keys, keys.length, layout);
+  try{
+    Map<dynamic, dynamic> cells = cellsList[0];
+    for(var key in cells.keys){
+      List keys = cells[key];
+      parseTree(template, keys, keys.length, layout);
+    }
+  }catch(e){
+    if(e.toString().contains('is not a subtype of')){
+      throw WrongCellFormatException("One of the cells is unreachable. Check if the value in template overlay is of type List<Int>.");
+    }
   }
 }
 
@@ -45,12 +52,18 @@ void parseTree(Map<String, dynamic> template, List cell, int cellsLength, List l
 }
 
 void parseAttributes (JsonWidgetRegistry registry, List attributes){
-  for (Map<String, dynamic> attribute in attributes){
-    Map<String, dynamic> labels = attribute["args"]["labels"];
-    for (MapEntry<String, dynamic> label in labels.entries) {
-      registry.setValue("${attribute["name"]}-${label.key}", label.value);
+  try {
+    for (Map<String, dynamic> attribute in attributes){
+      Map<String, dynamic> labels = attribute["args"]["labels"];
+      for (MapEntry<String, dynamic> label in labels.entries) {
+        registry.setValue("${attribute["name"]}-${label.key}", label.value);
+      }
+      registry.setValue("currentLanguage", labels.entries.first.key);
     }
-    registry.setValue("currentLanguage", labels.entries.first.key);
+  }catch(e){
+    if(e.runtimeType == NoSuchMethodError){
+      throw NoLabelException("No field `labels` have been found for one of the attributes. Check and correct the attribute overlay.");
+    }
   }
 }
 
