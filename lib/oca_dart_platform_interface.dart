@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:oca_dart/widget_data.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'oca_dart_method_channel.dart';
@@ -29,7 +30,7 @@ abstract class OcaDartPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<Uint8List> zipFromHttp(String digest) {
-    throw UnimplementedError('getZipFromHttp() has not been implemented.');
+  Future<WidgetData> performInitialSteps(String path) async{
+    throw UnimplementedError('initialSteps() has not been implemented.');
   }
 }

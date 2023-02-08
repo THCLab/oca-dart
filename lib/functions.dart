@@ -1,8 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:oca_dart/widget_data.dart';
+import 'dart:ui';
+import 'custom_widgets/date_picker.dart' as show_date_picker_fun;
+import 'custom_widgets/time_picker.dart' as show_time_picker_fun;
+import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
 
 Future<Map<dynamic, dynamic>> getMapData(String path) async{
   final String mapString = await rootBundle.loadString(path);
@@ -58,4 +64,28 @@ Future<Uint8List> getZipFromHttp (String digest) async{
   print(response.statusCode);
   print(response.bodyBytes.length);
   return response.bodyBytes;
+}
+
+Widget getWidgetFromJSON (WidgetData data, BuildContext context){
+  var widget = JsonWidgetData.fromDynamic(data.jsonData, registry: data.registry);
+  return widget!.build(context: context);
+}
+
+Future<WidgetData> initialSteps(String path) async{
+  WidgetsFlutterBinding.ensureInitialized();
+  var registry = JsonWidgetRegistry();
+  registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
+  registry.registerFunction('returnLabel', ({args, required registry}) => registry.getValue("${args![0]}-${args[1]}"));
+  registry.registerFunctions({
+    show_date_picker_fun.key: show_date_picker_fun.body,
+    show_time_picker_fun.key: show_time_picker_fun.body,
+    show_file_picker_fun.key: show_file_picker_fun.body,
+  });
+  var layoutData = await getMapData('assets/layout.json');
+  var templateData = await getMapData('assets/form_template.json');
+  var attributeData = await getMapData('assets/attribute.json');
+  var a = templateData['template'][0];
+  parseCells(templateData['cells'], a, layoutData['elements']);
+  parseAttributes(registry, attributeData['attributes']);
+  return(WidgetData(registry: registry, jsonData: a));
 }

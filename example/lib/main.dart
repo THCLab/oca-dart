@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:oca_dart/functions.dart';
 import 'package:oca_dart/oca_dart.dart';
+import 'package:oca_dart/widget_data.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  final _ocaDartPlugin = OcaDart();
+  WidgetData widgetData = await _ocaDartPlugin.initialSteps();
+  runApp(MyApp(widgetData: widgetData,));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final WidgetData widgetData;
+  const MyApp({super.key, required this.widgetData});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -18,6 +23,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _ocaDartPlugin = OcaDart();
+  late WidgetData widgetData;
 
   @override
   void initState() {
@@ -38,7 +44,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
-    print(await _ocaDartPlugin.getZipFromHttp('EVRvOZAqbhpFJFoVc5TdPuJ49NbE0wtaSVVNZFPtt9B8'));
   }
 
   @override
@@ -50,7 +55,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: getWidgetFromJSON(widget.widgetData, context) ?? Container()
         ),
       ),
     );

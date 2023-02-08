@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:oca_dart/widget_data.dart';
 
 import 'functions.dart';
 import 'oca_dart_platform_interface.dart';
@@ -20,5 +21,11 @@ class MethodChannelOcaDart extends OcaDartPlatform {
   Future<Uint8List> zipFromHttp(String digest) async{
     final bytes = await getZipFromHttp(digest);
     return bytes;
+  }
+
+  @override
+  Future<WidgetData> performInitialSteps(String path) async{
+    final widgetData = initialSteps('x');
+    return widgetData;
   }
 }

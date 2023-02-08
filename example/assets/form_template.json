@@ -1,0 +1,40 @@
+{
+  "template" : [
+    {
+      "type" : "single_child_scroll_view",
+      "label" : "scsv1",
+      "children" : [
+        {
+          "type": "column",
+          "label": "column1",
+          "children" : [
+            {
+              "type": "row",
+              "label": "row1",
+              "children" : []
+            },
+            {
+              "type": "column",
+              "label": "column2",
+              "children" : []
+            },
+            {
+              "type": "row",
+              "label": "row2",
+              "children" : []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cells" : [
+    {
+      "scsv1" : [],
+      "column1" : [0],
+      "row1" : [0,0],
+      "column2" : [0,1],
+      "row2" : [0,2]
+    }
+  ]
+}

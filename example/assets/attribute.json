@@ -1,0 +1,34 @@
+{
+  "attributes" : [
+    {
+      "name" : "formTitle",
+      "args" : {
+        "format" : "[A-Za-z]",
+        "labels" : {
+          "en-US" : "Form Title",
+          "pl" : "Tytuł formularza"
+        }
+      }
+    },
+    {
+      "name" : "name",
+      "args" : {
+        "format" : "[A-Za-z]",
+        "labels" : {
+          "en-US" : "Name",
+          "pl" : "Imię i nazwisko"
+        }
+      }
+    },
+    {
+      "name" : "rowText",
+      "args" : {
+        "format" : "[A-Za-z]",
+        "labels" : {
+          "en-US" : "Example text",
+          "pl" : "Przykładowy tekst"
+        }
+      }
+    }
+  ]
+}
