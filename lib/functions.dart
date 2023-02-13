@@ -111,12 +111,19 @@ void parseConformance(dynamic layout, Map<dynamic, dynamic> conformanceOverlay){
   }
 }
 
-void parseAttributes (JsonWidgetRegistry registry, List attributes){
+void parseAttributes (JsonWidgetRegistry registry, List attributes, Map conformanceOverlay){
   try {
     for (Map<String, dynamic> attribute in attributes){
       Map<String, dynamic> labels = attribute["args"]["labels"];
+      var isMandatory = false;
+      for (MapEntry<dynamic, dynamic> conf in conformanceOverlay.entries) {
+        if(conf.key == attribute["name"] && conf.value == "M"){
+          isMandatory = true;
+          break;
+        }
+      }
       for (MapEntry<String, dynamic> label in labels.entries) {
-        registry.setValue("${attribute["name"]}-${label.key}", label.value);
+        isMandatory ? registry.setValue("${attribute["name"]}-${label.key}", "${label.value} *") : registry.setValue("${attribute["name"]}-${label.key}", label.value);
       }
       registry.setValue("currentLanguage", labels.entries.first.key);
     }
@@ -193,7 +200,7 @@ Future<WidgetData> initialSteps(String path) async{
   parseForm(layoutData['elements'], formatData);
   parseConformance(layoutData['elements'], conformanceData);
   parseCells(templateData['cells'], a, layoutData['elements']);
-  parseAttributes(registry, attributeData['attributes']);
+  parseAttributes(registry, attributeData['attributes'], conformanceData['attribute_conformance']);
   print(a);
   return(WidgetData(registry: registry, jsonData: a));
 }
