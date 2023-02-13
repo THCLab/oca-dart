@@ -66,10 +66,10 @@ void parseForm(dynamic layout, Map<dynamic, dynamic> formatOverlay){
         if(element['children'][i]['id'] != null){
           for(var key in formatOverlay['attribute_formats'].keys){
             if(element['children'][i]['id'] == "edit${toBeginningOfSentenceCase(key)}"){
-              element['children'][i]['validators'] = json.encode([{
+              element['children'][i]['validators'] = [{
                 "type": "regex",
                 "regex" : formatOverlay['attribute_formats'][key]
-              }]);
+              }];
             }
           }
           //print(element['children'][i]['id']);
@@ -77,6 +77,35 @@ void parseForm(dynamic layout, Map<dynamic, dynamic> formatOverlay){
         }
         print(element['children']);
         parseForm(element['children'], formatOverlay);
+      }
+    }
+  }
+}
+
+void parseConformance(dynamic layout, Map<dynamic, dynamic> conformanceOverlay){
+  for (Map <String, dynamic> element in layout){
+    if(element['children'] != null){
+      print(element['children'].length);
+      for(int i=0; i<element['children'].length; i++){
+        print(element['children'][i]['type']);
+        if(element['children'][i]['id'] != null){
+          for(var key in conformanceOverlay['attribute_conformance'].keys){
+            if(element['children'][i]['id'] == "edit${toBeginningOfSentenceCase(key)}"){
+              if(element['children'][i]['validators'] == null){
+                element['children'][i]['validators'] = [{
+                  "type": "required"
+                }];
+              }else{
+                //print(element['children'][i]['validators']);
+                element['children'][i]['validators'].add({
+                  "type": "required"
+                });
+              }
+            }
+          }
+        }
+        print(element['children']);
+        parseConformance(element['children'], conformanceOverlay);
       }
     }
   }
@@ -159,8 +188,10 @@ Future<WidgetData> initialSteps(String path) async{
   var templateData = await getMapData('assets/form_template.json');
   var attributeData = await getMapData('assets/attribute.json');
   var formatData = await getMapData('assets/format.json');
+  var conformanceData = await getMapData('assets/conformance.json');
   var a = templateData['template'][0];
   parseForm(layoutData['elements'], formatData);
+  parseConformance(layoutData['elements'], conformanceData);
   parseCells(templateData['cells'], a, layoutData['elements']);
   parseAttributes(registry, attributeData['attributes']);
   print(a);
