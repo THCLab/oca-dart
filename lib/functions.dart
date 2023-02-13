@@ -60,8 +60,9 @@ void parseTree(Map<String, dynamic> template, List cell, int cellsLength, List l
 void parseForm(dynamic layout, Map<dynamic, dynamic> formatOverlay){
   for (Map <String, dynamic> element in layout){
     if(element['children'] != null){
+      print(element['children'].length);
       for(int i=0; i<element['children'].length; i++){
-        //print(element['children'][i]['type']);
+        print(element['children'][i]['type']);
         if(element['children'][i]['id'] != null){
           for(var key in formatOverlay['attribute_formats'].keys){
             if(element['children'][i]['id'] == "edit${toBeginningOfSentenceCase(key)}"){
@@ -74,6 +75,7 @@ void parseForm(dynamic layout, Map<dynamic, dynamic> formatOverlay){
           //print(element['children'][i]['id']);
           //print(element['children'][i]['validators']);
         }
+        print(element['children']);
         parseForm(element['children'], formatOverlay);
       }
     }
