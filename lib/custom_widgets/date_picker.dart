@@ -18,7 +18,7 @@ dynamic body({
             firstDate: DateTime(1950),
             //DateTime.now() - not to allow to choose before today.
             lastDate: DateTime(2100)).then((value) {
-              registry.setValue(pickedValueVarName, DateFormat('dd.MM.yyyy').format(value!).toString());
+              registry.setValue(pickedValueVarName, DateFormat('yyyy-MM-dd').format(value!).toString());
         });
       }
     };

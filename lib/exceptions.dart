@@ -19,3 +19,25 @@ class WrongCellFormatException implements Exception {
   @override
   String toString() => "WrongCellFormatException: $cause";
 }
+
+///An exception thrown when OCA Bundle cannot be downloaded
+class ServiceUnreachableException implements Exception {
+  ///The description for the exception.
+  String cause;
+
+  ///Exception constructor containing the description for the exception.
+  ServiceUnreachableException(this.cause);
+  @override
+  String toString() => "ServiceUnreachableException: $cause";
+}
+
+///An exception thrown when the path to the widget in `cells` is incorrect
+class CellPathException implements Exception {
+  ///The description for the exception.
+  String cause;
+
+  ///Exception constructor containing the description for the exception.
+  CellPathException(this.cause);
+  @override
+  String toString() => "CellPathException: $cause";
+}

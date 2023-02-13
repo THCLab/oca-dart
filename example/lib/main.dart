@@ -9,6 +9,7 @@ import 'package:oca_dart/widget_data.dart';
 void main() async{
   final _ocaDartPlugin = OcaDart();
   WidgetData widgetData = await _ocaDartPlugin.initialSteps();
+  print(widgetData.registry.values);
   runApp(MyApp(widgetData: widgetData,));
 }
 

@@ -81,6 +81,7 @@
           "children" : [
             {
               "type": "text_form_field",
+              "id": "editName",
               "args": {
                 "decoration" : {
                   "hintText" : "Insert first information",
@@ -106,8 +107,7 @@
                     }
                   }
                 }
-              },
-              "id": "edit_message_1"
+              }
             }
           ]
         },
@@ -120,21 +120,15 @@
       ]
     },
     {
-      "label" : "row2",
+      "label" : "column3",
       "args" : {
-        "mainAxisAlignment" : "spaceBetween"
+        "crossAxisAlignment" : "start"
       },
       "children" : [
         {
-          "type" : "sized_box",
-          "args" : {
-            "width" : "${scaleSize(100)}"
-          }
-        },
-        {
           "type" : "text",
           "args": {
-            "text" : "${returnLabel('rowText', language ?? currentLanguage)}",
+            "text" : "${returnLabel('birthDate', language ?? currentLanguage)}",
             "style": {
               "fontSize": "${scaleSize(45)}",
               "color": "#616161"
@@ -142,21 +136,127 @@
           }
         },
         {
-          "type": "icon",
-          "args": {
-            "icon": {
-              "codePoint": 57634,
-              "fontFamily": "MaterialIcons"
-            },
-            "size": 15,
-            "color" : "#616161"
+          "type" : "sized_box",
+          "args" : {
+            "height" : "${scaleSize(20)}"
           }
         },
         {
-          "type" : "sized_box",
-          "args" : {
-            "width" : "${scaleSize(100)}"
-          }
+          "type" : "container",
+          "args": {
+            "width": "${scaleSize(735)}",
+            "height": "${scaleSize(120)}"
+          },
+          "children" : [
+            {
+              "type": "save_context",
+              "args": {
+                "key": "dialogContext"
+              },
+              "children" : [
+                {
+                  "type": "text_form_field",
+                  "id": "editBirthDate",
+                  "readOnly" : "true",
+                  "args": {
+                    "validators": [
+                      {
+                        "type": "required"
+                      },
+                      {
+                        "type": "regex",
+                        "regex" : "[A-Z]"
+                      }
+                    ],
+                    "initialValue": "${pickedDate}",
+                    "decoration" : {
+                      "border" : {
+                        "type" : "outline",
+                        "borderSide" : {
+                          "gapPadding" : "1.0",
+                          "color" : "#000000"
+                        }
+                      },
+                      "filledBorder" : {
+                        "type" : "outline",
+                        "borderSide" : {
+                          "width" : "10.0",
+                          "color" : "#000000"
+                        }
+                      },
+                      "focusedBorder" : {
+                        "type" : "outline",
+                        "args" : {
+                          "gapPadding" : "1.0",
+                          "width" : "10.0"
+                        }
+                      },
+                      "hintText" : "YYYY-MM-DD",
+                      "suffixIcon": {
+                        "type": "icon_button",
+                        "args": {
+                          "icon": {
+                            "type": "icon",
+                            "args": {
+                              "icon": {
+                                "codePoint": 984763,
+                                "fontFamily": "MaterialIcons",
+                                "size": 50
+                              }
+                            }
+                          },
+                          "onPressed": "${showDatePicker('dialogContext')}"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label" : "row2",
+      "args" : {
+        "mainAxisAlignment" : "center"
+      },
+      "children" : [
+        {
+          "type": "save_context",
+          "args": {
+            "key": "buttonContext"
+          },
+          "children": [
+            {
+              "type" : "set_value",
+              "args" : {
+                "firstInfo" : "editName"
+              },
+              "children" : [
+                {
+                  "type": "text_button",
+                  "args": {
+                    "style": {
+                      "foregroundColor": {
+                        "pressed": "FF2196F3",
+                        "focused": "FF2196F3",
+                        "empty": "FFF44336"
+                      }
+                    },
+                    "onPressed" : "${validateForm('buttonContext')}"
+                  },
+                  "child": {
+                    "type": "text",
+                    "args": {
+                      "text": "SUBMIT"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }
