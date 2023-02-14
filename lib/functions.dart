@@ -98,32 +98,48 @@ void parseFormat(dynamic element, Map<dynamic, dynamic> formatOverlay){
   }
 }
 
-void parseConformance(dynamic layout, Map<dynamic, dynamic> conformanceOverlay){
-  for (Map <String, dynamic> element in layout){
+void iterateConformance(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> conformanceData){
+  for (Map <String, dynamic> element in layoutData['elements']){
     if(element['children'] != null){
-      print(element['children'].length);
-      for(int i=0; i<element['children'].length; i++){
-        print(element['children'][i]['type']);
-        if(element['children'][i]['id'] != null){
-          for(var key in conformanceOverlay['attribute_conformance'].keys){
-            if(element['children'][i]['id'] == "edit${toBeginningOfSentenceCase(key)}"){
-              if(element['children'][i]['validators'] == null){
-                element['children'][i]['validators'] = [{
-                  "type": "required"
-                }];
-              }else{
-                //print(element['children'][i]['validators']);
-                element['children'][i]['validators'].add({
-                  "type": "required"
-                });
-              }
-            }
+      for(Map <String, dynamic> child in element['children']){
+        print(child['type']);
+        if(child['children']!= null){
+          print(child['children'].map((child) => child['type']));
+          for(Map <String, dynamic> grandchild in  child['children']){
+            parseConformance(grandchild, conformanceData);
           }
         }
-        print(element['children']);
-        parseConformance(element['children'], conformanceOverlay);
+      }
+      print('-------------------------');
+    }
+  }
+}
+
+void parseConformance(dynamic element, Map<dynamic, dynamic> conformanceOverlay){
+  if(element['id'] != null){
+    for(var key in conformanceOverlay['attribute_conformance'].keys){
+      if(element['id'] == "edit${toBeginningOfSentenceCase(key)}"){
+        if(element['id'] == "edit${toBeginningOfSentenceCase(key)}"){
+          if(element['validators'] == null){
+            element['validators'] = [{
+              "type": "required"
+            }];
+          }else{
+            element['validators'].add({
+              "type": "required"
+            });
+          }
+        }
       }
     }
+  }
+  if(element['children'] != null){
+    for(int i=0; i<element['children'].length; i++){
+      print("child type: ${element['children'][i]['type'].toString()}");
+      parseConformance(element['children'][i], conformanceOverlay);
+    }
+  }else{
+    print("last element: ${element['type']}");
   }
 }
 
@@ -214,8 +230,7 @@ Future<WidgetData> initialSteps(String path) async{
   var conformanceData = await getMapData('assets/conformance.json');
   var a = templateData['template'][0];
   iterateFormat(layoutData, formatData);
-
-  //parseConformance(layoutData['elements'], conformanceData);
+  iterateConformance(layoutData, conformanceData);
   parseCells(templateData['cells'], a, layoutData['elements']);
   parseAttributes(registry, attributeData['attributes'], conformanceData['attribute_conformance']);
   print(a);
