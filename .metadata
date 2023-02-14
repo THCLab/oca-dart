@@ -4,7 +4,7 @@
 # This file should be version controlled.
 
 version:
-  revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
+  revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
   channel: stable
 
 project_type: plugin
@@ -13,14 +13,17 @@ project_type: plugin
 migration:
   platforms:
     - platform: root
-      create_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
-      base_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
+      create_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
+      base_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
     - platform: android
-      create_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
-      base_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
+      create_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
+      base_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
     - platform: ios
-      create_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
-      base_revision: b8f7f1f9869bb2d116aa6a70dbeac61000b52849
+      create_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
+      base_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
+    - platform: windows
+      create_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
+      base_revision: 32fb2f948e9b1a2d1b876ebee3558be7f51b457f
 
   # User provided section
 
