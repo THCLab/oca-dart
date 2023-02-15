@@ -21,9 +21,9 @@ Future<Map<dynamic, dynamic>> getMapData(String path) async{
   return mapData;
 }
 
-void parseCells(List cellsList, template, layout){
+void parseCells(Map<dynamic, dynamic> cellsList, template, layout){
   try{
-    Map<dynamic, dynamic> cells = cellsList[0];
+    Map<dynamic, dynamic> cells = cellsList;
     for(var key in cells.keys){
       List keys = cells[key];
       parseTree(template, keys, keys.length, layout);
@@ -99,6 +99,7 @@ void parseFormat(dynamic element, Map<dynamic, dynamic> formatOverlay){
 }
 
 void iterateConformance(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> conformanceData){
+  print(layoutData);
   for (Map <String, dynamic> element in layoutData['elements']){
     if(element['children'] != null){
       for(Map <String, dynamic> child in element['children']){
@@ -143,6 +144,24 @@ void parseConformance(dynamic element, Map<dynamic, dynamic> conformanceOverlay)
   }
 }
 
+void parseLabel(JsonWidgetRegistry registry, List labelOverlay, Map<String, dynamic> conformanceOverlay){
+  for (Map<String, dynamic> entry in labelOverlay){
+    var language = entry['language'];
+    Map<String, dynamic> labels = entry["attribute_labels"];
+    var isMandatory = false;
+    for (MapEntry<dynamic, dynamic> label in labels.entries) {
+      for (MapEntry<dynamic, dynamic> conf in conformanceOverlay.entries) {
+        if(conf.key == label.key && conf.value == "M"){
+          isMandatory = true;
+          break;
+        }
+      }
+      isMandatory ? registry.setValue("${label.key}-$language", "${label.value} *") : registry.setValue("${label.key}-$language", label.value);
+    }
+  }
+  registry.setValue("currentLanguage", labelOverlay[0]['language']);
+}
+
 void parseAttributes (JsonWidgetRegistry registry, List attributes, Map conformanceOverlay){
   try {
     for (Map<String, dynamic> attribute in attributes){
@@ -166,17 +185,27 @@ void parseAttributes (JsonWidgetRegistry registry, List attributes, Map conforma
   }
 }
 
-void parseEntryCode(Map<dynamic, dynamic> entryCodeOverlay, JsonWidgetRegistry registry) {
-  for(var key in entryCodeOverlay['attribute_entries'].keys){
-    for (MapEntry attribute in entryCodeOverlay['attribute_entries'][key].entries){
+void parseEntry(List entryCodeOverlay, JsonWidgetRegistry registry) {
+  for(var entry in entryCodeOverlay){
+    for (MapEntry attribute in entry['attribute_entries'].entries){
       List entryTable = [];
       String label = attribute.key;
       for (MapEntry entry in attribute.value.entries){
         entryTable.add(entry.value);
       }
-      registry.setValue('$label-edit-$key', entryTable);
+      registry.setValue('$label-edit-${entry['language']}', entryTable);
     }
   }
+  // for(var key in entryCodeOverlay['attribute_entries'].keys){
+  //   for (MapEntry attribute in entryCodeOverlay['attribute_entries'][key].entries){
+  //     List entryTable = [];
+  //     String label = attribute.key;
+  //     for (MapEntry entry in attribute.value.entries){
+  //       entryTable.add(entry.value);
+  //     }
+  //     registry.setValue('$label-edit-$key', entryTable);
+  //   }
+  // }
 }
 
 Future<Uint8List> getZipFromHttp (String digest) async{
@@ -239,18 +268,26 @@ Future<WidgetData> initialSteps(String path) async{
       builder: CustomSlider.fromDynamic,
     ),
   );
-  var layoutData = await getMapData('assets/layout.json');
-  var templateData = await getMapData('assets/form_template.json');
-  var attributeData = await getMapData('assets/attribute.json');
-  var formatData = await getMapData('assets/format.json');
-  var conformanceData = await getMapData('assets/conformance.json');
-  var entryData = await getMapData('assets/entry_code.json');
-  var a = templateData['template'][0];
-  iterateFormat(layoutData, formatData);
-  iterateConformance(layoutData, conformanceData);
-  parseCells(templateData['cells'], a, layoutData['elements']);
-  parseAttributes(registry, attributeData['attributes'], conformanceData['attribute_conformance']);
-  parseEntryCode(entryData, registry);
+  var overlay = await getMapData('assets/overlay.json');
+  var a = overlay['overlays']['template']['attribute_template'];
+  iterateFormat(overlay['overlays']['layout']['attribute_layout'], overlay['overlays']['format']);
+  iterateConformance(overlay['overlays']['layout']['attribute_layout'], overlay['overlays']['conformance']);
+  parseCells(overlay['overlays']['template']['attribute_cells'], a, overlay['overlays']['layout']['attribute_layout']['elements']);
+  parseLabel(registry, overlay['overlays']['label'], overlay['overlays']['conformance']);
+  parseEntry(overlay['overlays']['entry'], registry);
+
+  // var layoutData = await getMapData('assets/layout.json');
+  // var templateData = await getMapData('assets/form_template.json');
+  // var attributeData = await getMapData('assets/attribute.json');
+  // var formatData = await getMapData('assets/format.json');
+  // var conformanceData = await getMapData('assets/conformance.json');
+  // var entryData = await getMapData('assets/entry_code.json');
+  // var a = templateData['template'][0];
+  // iterateFormat(layoutData, formatData);
+  // iterateConformance(layoutData, conformanceData);
+  // parseCells(templateData['cells'], a, layoutData['elements']);
+  // parseAttributes(registry, attributeData['attributes'], conformanceData['attribute_conformance']);
+  // parseEntryCode(entryData, registry);
   print(a);
   return(WidgetData(registry: registry, jsonData: a));
 }

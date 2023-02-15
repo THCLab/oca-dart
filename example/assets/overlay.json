@@ -55,6 +55,15 @@
         "name":"O"
       }
     },
+    "format": {
+      "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+      "said": "EyiCrlCKIX3L_a3o7xPND6--_B3vEYChhyGzSeNexl7E",
+      "type": "spec/overlays/conformance/1.0",
+      "attribute_formats":{
+        "birthDate":"YYYY-MM-DD",
+        "name":"[a-zA-Z]"
+      }
+    },
     "entry": [
       {
         "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
