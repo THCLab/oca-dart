@@ -39,6 +39,16 @@
           "pl" : "Data urodzenia"
         }
       }
+    },
+    {
+      "name" : "sex",
+      "args" : {
+        "format" : "",
+        "labels" : {
+          "en-US" : "Sex",
+          "pl" : "Płeć"
+        }
+      }
     }
   ]
 }

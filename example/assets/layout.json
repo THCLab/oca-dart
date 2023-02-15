@@ -218,6 +218,52 @@
       ]
     },
     {
+      "label" : "column4",
+      "args" : {
+        "crossAxisAlignment" : "start"
+      },
+      "children" : [
+        {
+          "type" : "text",
+          "args": {
+            "text" : "${returnLabel('sex', language ?? currentLanguage)}",
+            "style": {
+              "fontSize": "${scaleSize(45)}",
+              "color": "#616161"
+            }
+          }
+        },
+        {
+          "type" : "sized_box",
+          "args" : {
+            "height" : "${scaleSize(20)}"
+          }
+        },
+        {
+          "type" : "container",
+          "args": {
+            "width": "${scaleSize(735)}",
+            "height": "${scaleSize(120)}"
+          },
+          "children" : [
+            {
+              "type" : "set_value",
+              "children" : [
+                {
+                  "type": "dropdown_button_form_field",
+                  "id": "sex-edit",
+                  "args": {
+                    "value" : "${returnLabel('sex-edit', language ?? currentLanguage)[0]}",
+                    "items": "${returnLabel('sex-edit', language ?? currentLanguage)}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "label" : "row2",
       "args" : {
         "mainAxisAlignment" : "center"

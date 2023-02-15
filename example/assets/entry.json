@@ -1,0 +1,21 @@
+{
+  "capture_base":"EVyoqPYxoPiZOneM84MN-7D0oOR03vCr5gg1hf3pxnis",
+  "type":"spec/overlays/entry/1.0",
+  "language":"en",
+  "attribute_entries":{
+    "en-US" : {
+      "sex":{
+        "F":"Female",
+        "M":"Male",
+        "X":"Unspecified"
+      }
+    },
+    "pl" : {
+      "sex":{
+        "F":"Kobieta",
+        "M":"Mężczyzna",
+        "X":"Nieokreślona"
+      }
+    }
+  }
+}

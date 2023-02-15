@@ -166,6 +166,19 @@ void parseAttributes (JsonWidgetRegistry registry, List attributes, Map conforma
   }
 }
 
+void parseEntryCode(Map<dynamic, dynamic> entryCodeOverlay, JsonWidgetRegistry registry) {
+  for(var key in entryCodeOverlay['attribute_entries'].keys){
+    for (MapEntry attribute in entryCodeOverlay['attribute_entries'][key].entries){
+      List entryTable = [];
+      String label = attribute.key;
+      for (MapEntry entry in attribute.value.entries){
+        entryTable.add(entry.value);
+      }
+      registry.setValue('$label-edit-$key', entryTable);
+    }
+  }
+}
+
 Future<Uint8List> getZipFromHttp (String digest) async{
   Map<String,String> headers = {
     'Content-type' : 'application/zip',
@@ -193,7 +206,10 @@ Future<WidgetData> initialSteps(String path) async{
   var registry = JsonWidgetRegistry();
   var navigatorKey = GlobalKey<NavigatorState>();
   registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
-  registry.registerFunction('returnLabel', ({args, required registry}) => registry.getValue("${args![0]}-${args[1]}"));
+  registry.registerFunction('returnLabel', ({args, required registry}) {
+    print(registry.getValue("${args![0]}-${args[1]}"));
+    return registry.getValue("${args![0]}-${args[1]}");
+  } );
   registry.registerFunctions({
     show_date_picker_fun.key: show_date_picker_fun.body,
     show_time_picker_fun.key: show_time_picker_fun.body,
@@ -219,7 +235,7 @@ Future<WidgetData> initialSteps(String path) async{
   );
   registry.registerCustomBuilder(
     CustomSlider.type,
-    JsonWidgetBuilderContainer(
+    const JsonWidgetBuilderContainer(
       builder: CustomSlider.fromDynamic,
     ),
   );
@@ -228,16 +244,13 @@ Future<WidgetData> initialSteps(String path) async{
   var attributeData = await getMapData('assets/attribute.json');
   var formatData = await getMapData('assets/format.json');
   var conformanceData = await getMapData('assets/conformance.json');
+  var entryData = await getMapData('assets/entry_code.json');
   var a = templateData['template'][0];
   iterateFormat(layoutData, formatData);
   iterateConformance(layoutData, conformanceData);
   parseCells(templateData['cells'], a, layoutData['elements']);
   parseAttributes(registry, attributeData['attributes'], conformanceData['attribute_conformance']);
+  parseEntryCode(entryData, registry);
   print(a);
   return(WidgetData(registry: registry, jsonData: a));
-}
-
-bool isValid(String regex, String entry) {
-  final regExp = RegExp(regex);
-  return regExp.hasMatch(entry);
 }

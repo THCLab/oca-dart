@@ -1,0 +1,460 @@
+{
+  "version": "OCAB10000023_",
+  "said": "SAID of the bundle",
+  "capture_base": {
+    "said": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+    "type": "spec/capture_base/1.0",
+    "classification": "GICS:35203010",
+    "attributes": {
+      "birthDate": "DateTime",
+      "sex": "Array[Text]",
+      "name": "Text",
+      "formTitle": "Text"
+    },
+    "flagged_attributes": [
+      "name"
+    ]
+  },
+  "overlays": {
+    "label": [
+      {
+        "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+        "said": "Ebqc7a6YoqPTa7tEDcdrooLxpQXKsomhSRZ3gcOEt_cQ",
+        "type": "spec/overlays/label/1.0",
+        "language": "en-US",
+        "attribute_labels": {
+          "birthDate": "Birth date",
+          "sex": "Sex",
+          "name": "Name",
+          "formTitle": "Form Title"
+        },
+        "attribute_categories": [],
+        "category_labels": {}
+      },
+      {
+        "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+        "said": "Ebqc7a6YoqPTa7tEDcdrooLxpQXKsomhSRZ3gcOEt_cQ",
+        "type": "spec/overlays/label/1.0",
+        "language": "pl",
+        "attribute_labels": {
+          "birthDate": "Data urodzenia",
+          "sex": "Płeć",
+          "name": "Imię",
+          "formTitle": "Tytuł formularza"
+        },
+        "attribute_categories": [],
+        "category_labels": {}
+      }
+    ],
+    "conformance": {
+      "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+      "said": "EyiCrlCKIX3L_a3o7xPND6--_B3vEYChhyGzSeNexl7E",
+      "type": "spec/overlays/conformance/1.0",
+      "attribute_conformance":{
+        "birthDate":"M",
+        "name":"O"
+      }
+    },
+    "entry": [
+      {
+        "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+        "said": "EbypqaG_Bw_UthQmvBpAQQBfcmFHoua8UNxX16NWEW4M",
+        "type": "spec/overlays/entry/1.0",
+        "language": "en-US",
+        "attribute_entries": {
+          "sex":{
+            "F":"Female",
+            "M":"Male",
+            "X":"Unspecified"
+          }
+        }
+      },
+      {
+        "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+        "said": "Et0M8eu1kAaArm7lzrm-bLFGu-M7Weg4f36_WA02e7HE",
+        "type": "spec/overlays/entry/1.0",
+        "language": "pl",
+        "attribute_entries": {
+          "sex":{
+            "F":"Kobieta",
+            "M":"Mężczyzna",
+            "X":"Nieokreślona"
+          }
+        }
+      }
+    ],
+    "template": {
+      "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+      "said": "EyiCrlCKIX3L_a3o7xPND6--_B3vEYChhyGzSeNexl7E",
+      "type": "spec/overlays/conformance/1.0",
+      "attribute_template" : {
+        "type" : "form",
+        "label" : "form1",
+        "children" : [
+          {
+            "type" : "single_child_scroll_view",
+            "label" : "scsv1",
+            "children" : [
+              {
+                "type": "column",
+                "label": "column1",
+                "children" : [
+                  {
+                    "type": "row",
+                    "label": "row1",
+                    "children" : []
+                  },
+                  {
+                    "type": "column",
+                    "label": "column2",
+                    "children" : []
+                  },
+                  {
+                    "type": "column",
+                    "label": "column3",
+                    "children" : []
+                  },
+                  {
+                    "type": "column",
+                    "label": "column4",
+                    "children" : []
+                  },
+                  {
+                    "type": "row",
+                    "label": "row2",
+                    "children" : []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "attribute_cells" : {
+        "form1" : [],
+        "scsv1" : [0],
+        "column1" : [0,0],
+        "row1" : [0,0,0],
+        "column2" : [0,0,1],
+        "column3" : [0,0,2],
+        "column4" : [0,0,3],
+        "row2" : [0,0,4]
+      }
+    },
+    "layout": {
+      "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+      "said": "EyiCrlCKIX3L_a3o7xPND6--_B3vEYChhyGzSeNexl7E",
+      "type": "spec/overlays/conformance/1.0",
+      "attribute_layout":{
+        "elements" : [
+          {
+            "label" : "row1",
+            "args" : {
+              "mainAxisAlignment" : "spaceBetween"
+            },
+            "children" : [
+              {
+                "type" : "text",
+                "args": {
+                  "text" : "${returnLabel('formTitle', language ?? currentLanguage)}",
+                  "style": {
+                    "fontSize": "${scaleSize(60)}",
+                    "color": "#000000",
+                    "fontWeight" : "bold"
+                  }
+                }
+              },
+              {
+                "type" : "container",
+                "args": {
+                  "width": "${scaleSize(225)}",
+                  "height": "${scaleSize(120)}"
+                },
+                "children" : [
+                  {
+                    "type" : "set_value",
+                    "children" : [
+                      {
+                        "type": "dropdown_button_form_field",
+                        "id": "language",
+                        "args": {
+                          "value" : "en-US",
+                          "items": [
+                            "en-US",
+                            "pl"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label" : "column2",
+            "args" : {
+              "crossAxisAlignment" : "start"
+            },
+            "children": [
+              {
+                "type" : "sized_box",
+                "args" : {
+                  "height" : "${scaleSize(40)}"
+                }
+              },
+              {
+                "type" : "text",
+                "args": {
+                  "text" : "${returnLabel('name', language ?? currentLanguage)}",
+                  "style": {
+                    "fontSize": "${scaleSize(45)}",
+                    "color": "#616161"
+                  }
+                }
+              },
+              {
+                "type" : "sized_box",
+                "args" : {
+                  "height" : "${scaleSize(20)}"
+                }
+              },
+              {
+                "type" : "container",
+                "args": {
+                  "width": "${scaleSize(735)}",
+                  "height": "${scaleSize(120)}"
+                },
+                "children" : [
+                  {
+                    "type": "text_form_field",
+                    "id": "editName",
+                    "args": {
+                      "decoration" : {
+                        "hintText" : "Insert first information",
+                        "border" : {
+                          "type" : "outline",
+                          "borderSide" : {
+                            "gapPadding" : "1.0",
+                            "color" : "#000000"
+                          }
+                        },
+                        "filledBorder" : {
+                          "type" : "outline",
+                          "borderSide" : {
+                            "width" : "10.0",
+                            "color" : "#000000"
+                          }
+                        },
+                        "focusedBorder" : {
+                          "type" : "outline",
+                          "args" : {
+                            "gapPadding" : "1.0",
+                            "width" : "10.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type" : "sized_box",
+                "args" : {
+                  "height" : "${scaleSize(40)}"
+                }
+              }
+            ]
+          },
+          {
+            "label" : "column3",
+            "args" : {
+              "crossAxisAlignment" : "start"
+            },
+            "children" : [
+              {
+                "type" : "text",
+                "args": {
+                  "text" : "${returnLabel('birthDate', language ?? currentLanguage)}",
+                  "style": {
+                    "fontSize": "${scaleSize(45)}",
+                    "color": "#616161"
+                  }
+                }
+              },
+              {
+                "type" : "sized_box",
+                "args" : {
+                  "height" : "${scaleSize(20)}"
+                }
+              },
+              {
+                "type" : "container",
+                "args": {
+                  "width": "${scaleSize(735)}",
+                  "height": "${scaleSize(120)}"
+                },
+                "children" : [
+                  {
+                    "type": "save_context",
+                    "args": {
+                      "key": "dialogContext"
+                    },
+                    "children" : [
+                      {
+                        "type": "text_form_field",
+                        "id": "editBirthDate",
+                        "readOnly" : "true",
+                        "args": {
+                          "validators": [
+                            {
+                              "type": "required"
+                            },
+                            {
+                              "type": "regex",
+                              "regex" : "[A-Z]"
+                            }
+                          ],
+                          "initialValue": "${pickedDate}",
+                          "decoration" : {
+                            "border" : {
+                              "type" : "outline",
+                              "borderSide" : {
+                                "gapPadding" : "1.0",
+                                "color" : "#000000"
+                              }
+                            },
+                            "filledBorder" : {
+                              "type" : "outline",
+                              "borderSide" : {
+                                "width" : "10.0",
+                                "color" : "#000000"
+                              }
+                            },
+                            "focusedBorder" : {
+                              "type" : "outline",
+                              "args" : {
+                                "gapPadding" : "1.0",
+                                "width" : "10.0"
+                              }
+                            },
+                            "hintText" : "YYYY-MM-DD",
+                            "suffixIcon": {
+                              "type": "icon_button",
+                              "args": {
+                                "icon": {
+                                  "type": "icon",
+                                  "args": {
+                                    "icon": {
+                                      "codePoint": 984763,
+                                      "fontFamily": "MaterialIcons",
+                                      "size": 50
+                                    }
+                                  }
+                                },
+                                "onPressed": "${showDatePicker('dialogContext')}"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label" : "column4",
+            "args" : {
+              "crossAxisAlignment" : "start"
+            },
+            "children" : [
+              {
+                "type" : "text",
+                "args": {
+                  "text" : "${returnLabel('sex', language ?? currentLanguage)}",
+                  "style": {
+                    "fontSize": "${scaleSize(45)}",
+                    "color": "#616161"
+                  }
+                }
+              },
+              {
+                "type" : "sized_box",
+                "args" : {
+                  "height" : "${scaleSize(20)}"
+                }
+              },
+              {
+                "type" : "container",
+                "args": {
+                  "width": "${scaleSize(735)}",
+                  "height": "${scaleSize(120)}"
+                },
+                "children" : [
+                  {
+                    "type" : "set_value",
+                    "children" : [
+                      {
+                        "type": "dropdown_button_form_field",
+                        "id": "sex-edit",
+                        "args": {
+                          "value" : "${returnLabel('sex-edit', language ?? currentLanguage)[0]}",
+                          "items": "${returnLabel('sex-edit', language ?? currentLanguage)}"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label" : "row2",
+            "args" : {
+              "mainAxisAlignment" : "center"
+            },
+            "children" : [
+              {
+                "type": "save_context",
+                "args": {
+                  "key": "buttonContext"
+                },
+                "children": [
+                  {
+                    "type" : "set_value",
+                    "args" : {
+                      "firstInfo" : "editName"
+                    },
+                    "children" : [
+                      {
+                        "type": "text_button",
+                        "args": {
+                          "style": {
+                            "foregroundColor": {
+                              "pressed": "FF2196F3",
+                              "focused": "FF2196F3",
+                              "empty": "FFF44336"
+                            }
+                          },
+                          "onPressed" : "${validateForm('buttonContext')}"
+                        },
+                        "child": {
+                          "type": "text",
+                          "args": {
+                            "text": "SUBMIT"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
