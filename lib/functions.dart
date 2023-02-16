@@ -193,8 +193,8 @@ void parseAttributes (JsonWidgetRegistry registry, List attributes, Map conforma
   }
 }
 
-void parseEntry(List entryCodeOverlay, JsonWidgetRegistry registry) {
-  for(var entry in entryCodeOverlay){
+void parseEntry(List entryOverlay, JsonWidgetRegistry registry) {
+  for(var entry in entryOverlay){
     for (MapEntry attribute in entry['attribute_entries'].entries){
       List entryTable = [];
       String label = attribute.key;
@@ -203,6 +203,17 @@ void parseEntry(List entryCodeOverlay, JsonWidgetRegistry registry) {
       }
       registry.setValue('$label-edit-${entry['language']}', entryTable);
     }
+  }
+}
+
+void parseEntryCode(Map<String, dynamic> entryCodeOverlay, JsonWidgetRegistry registry){
+  for (MapEntry attribute in entryCodeOverlay.entries){
+    List selectTable = [];
+    String label = attribute.key;
+    for (dynamic entry in attribute.value){
+      selectTable.add(entry);
+    }
+    registry.setValue("selectable${toBeginningOfSentenceCase(label)}", selectTable);
   }
 }
 
@@ -225,6 +236,8 @@ Future<Uint8List> getZipFromHttp (String digest) async{
 
 Widget getWidgetFromJSON (WidgetData data, BuildContext context){
   var widget = JsonWidgetData.fromDynamic(data.jsonData, registry: data.registry);
+  //print("NEW VALUESSSSSSSSSSSSSSSSSSSS");
+  //print("val: ${data.registry.values}");
   return widget!.build(context: context);
 }
 
@@ -234,7 +247,9 @@ Future<WidgetData> initialSteps(String path) async{
   var navigatorKey = GlobalKey<NavigatorState>();
   registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
   registry.registerFunction('returnLabel', ({args, required registry}) {
-    print(registry.getValue("${args![0]}-${args[1]}"));
+    print("${args![0]}-${args[1]}");
+    print(registry.values);
+    print(registry.debugLabel);
     return registry.getValue("${args![0]}-${args[1]}");
   } );
   registry.registerFunctions({
@@ -254,6 +269,14 @@ Future<WidgetData> initialSteps(String path) async{
       if(valid){
         registry.navigatorKey?.currentState!.pushNamed(args[1]);
       }
+    },
+    'chooseValue': ({args, required registry}) => () {
+      print('weszło');
+      var variableName = args![0]; // np.sex
+      List values = args![1]; //np. [Female, Male, Unspecified]
+      var selectedIndex = values.indexOf(registry.getValue("$variableName-edit"));
+      List selectableValues = registry.getValue("selectable${toBeginningOfSentenceCase(variableName)}");
+      registry.setValue("picked${toBeginningOfSentenceCase(variableName)}", selectableValues[selectedIndex]);
     }
   });
   Validator.registerCustomValidatorBuilder(
@@ -274,6 +297,7 @@ Future<WidgetData> initialSteps(String path) async{
   parseCells(overlay['overlays']['template']['attribute_cells'], a, overlay['overlays']['layout']['attribute_layout']['elements']);
   parseLabel(registry, overlay['overlays']['label'], overlay['overlays']['conformance']);
   parseEntry(overlay['overlays']['entry'], registry);
+  parseEntryCode(overlay['overlays']['entry_code']['attribute_entry_codes'], registry);
 
   // var layoutData = await getMapData('assets/layout.json');
   // var templateData = await getMapData('assets/form_template.json');

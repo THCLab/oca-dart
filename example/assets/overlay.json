@@ -64,6 +64,18 @@
         "name":"[a-zA-Z]"
       }
     },
+    "entry_code": {
+      "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
+      "said": "EwltbQO5D1AEvDg8ETBo2mU0sYb09guSmWF3Vsi6WKfU",
+      "type": "spec/overlays/entry_code/1.0",
+      "attribute_entry_codes": {
+        "sex": [
+          "F",
+          "M",
+          "X"
+        ]
+      }
+    },
     "entry": [
       {
         "capture_base": "E9V_1S5JwM9HA5qut8xfKlZLKuZTCJlEzQFNJs4MbBuY",
@@ -315,15 +327,6 @@
                         "id": "editBirthDate",
                         "readOnly" : "true",
                         "args": {
-                          "validators": [
-                            {
-                              "type": "required"
-                            },
-                            {
-                              "type": "regex",
-                              "regex" : "[A-Z]"
-                            }
-                          ],
                           "initialValue": "${pickedDate}",
                           "decoration" : {
                             "border" : {
@@ -361,7 +364,7 @@
                                     }
                                   }
                                 },
-                                "onPressed": "${showDatePicker('dialogContext')}"
+                                "onPressed": "${showDatePicker('dialogContext', 'pickedDate', 'yyyy-mm-dd')}"
                               }
                             }
                           }
@@ -410,7 +413,8 @@
                         "id": "sex-edit",
                         "args": {
                           "value" : "${returnLabel('sex-edit', language ?? currentLanguage)[0]}",
-                          "items": "${returnLabel('sex-edit', language ?? currentLanguage)}"
+                          "items": "${returnLabel('sex-edit', language ?? currentLanguage)}",
+                          "onChanged" : "${chooseValue('sex', returnLabel('sex-edit', language ?? currentLanguage))}"
                         }
                       }
                     ]

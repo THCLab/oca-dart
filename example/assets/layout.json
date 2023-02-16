@@ -205,7 +205,7 @@
                               }
                             }
                           },
-                          "onPressed": "${showDatePicker('dialogContext')}"
+                          "onPressed": "${showDatePicker('dialogContext', 'pickedDate', 'yyyy-mm-dd')}"
                         }
                       }
                     }
@@ -254,7 +254,8 @@
                   "id": "sex-edit",
                   "args": {
                     "value" : "${returnLabel('sex-edit', language ?? currentLanguage)[0]}",
-                    "items": "${returnLabel('sex-edit', language ?? currentLanguage)}"
+                    "items": "${returnLabel('sex-edit', language ?? currentLanguage)}",
+                    "onSaved" : "${chooseValue('sex', returnLabel('sex-edit', language ?? currentLanguage))}"
                   }
                 }
               ]

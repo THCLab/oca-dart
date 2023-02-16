@@ -8,6 +8,10 @@ dynamic body({
   required JsonWidgetRegistry registry,
 }) =>
         () {
+  print('weszłoooooooooooooooooo');
+  print(args?.length);
+  print(registry.values);
+  print(registry.debugLabel);
       if (args != null && args.length == 3) {
         final String buildContextVarName = args[0];
         final String pickedValueVarName = args[1];
