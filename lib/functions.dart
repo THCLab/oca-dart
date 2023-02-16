@@ -58,7 +58,7 @@ void parseTree(Map<String, dynamic> template, List cell, int cellsLength, List l
 }
 
 
-void iterateFormat(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> formatData){
+void iterateFormat(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> formatData, Map<dynamic, dynamic> captureBase){
   for (Map <String, dynamic> element in layoutData['elements']){
     if(element['children'] != null){
       for(Map <String, dynamic> child in element['children']){
@@ -66,7 +66,7 @@ void iterateFormat(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> forma
         if(child['children']!= null){
           print(child['children'].map((child) => child['type']));
           for(Map <String, dynamic> grandchild in  child['children']){
-            parseFormat(grandchild, formatData);
+            parseFormat(grandchild, formatData, captureBase);
           }
         }
       }
@@ -75,15 +75,23 @@ void iterateFormat(Map<dynamic, dynamic> layoutData, Map<dynamic, dynamic> forma
   }
 }
 
-void parseFormat(dynamic element, Map<dynamic, dynamic> formatOverlay){
+void parseFormat(dynamic element, Map<dynamic, dynamic> formatOverlay, Map<dynamic, dynamic> captureBase){
   if(element['id'] != null){
     for(var key in formatOverlay['attribute_formats'].keys){
       if(element['id'] == "edit${toBeginningOfSentenceCase(key)}"){
+        print(captureBase.keys);
+        print(key);
+        var attributeFormat = captureBase[key];
+        switch (attributeFormat){
+          case 'Text' :
+            element['validators'] = [{
+              "type": "regex",
+              "regex" : formatOverlay['attribute_formats'][key]
+            }];
+            break;
+        }
         print(element['id']);
-        element['validators'] = [{
-          "type": "regex",
-          "regex" : formatOverlay['attribute_formats'][key]
-        }];
+
         break;
       }
     }
@@ -91,7 +99,7 @@ void parseFormat(dynamic element, Map<dynamic, dynamic> formatOverlay){
   if(element['children'] != null){
     for(int i=0; i<element['children'].length; i++){
       print("child type: ${element['children'][i]['type'].toString()}");
-      parseFormat(element['children'][i], formatOverlay);
+      parseFormat(element['children'][i], formatOverlay, captureBase);
     }
   }else{
     print("last element: ${element['type']}");
@@ -196,16 +204,6 @@ void parseEntry(List entryCodeOverlay, JsonWidgetRegistry registry) {
       registry.setValue('$label-edit-${entry['language']}', entryTable);
     }
   }
-  // for(var key in entryCodeOverlay['attribute_entries'].keys){
-  //   for (MapEntry attribute in entryCodeOverlay['attribute_entries'][key].entries){
-  //     List entryTable = [];
-  //     String label = attribute.key;
-  //     for (MapEntry entry in attribute.value.entries){
-  //       entryTable.add(entry.value);
-  //     }
-  //     registry.setValue('$label-edit-$key', entryTable);
-  //   }
-  // }
 }
 
 Future<Uint8List> getZipFromHttp (String digest) async{
@@ -270,7 +268,8 @@ Future<WidgetData> initialSteps(String path) async{
   );
   var overlay = await getMapData('assets/overlay.json');
   var a = overlay['overlays']['template']['attribute_template'];
-  iterateFormat(overlay['overlays']['layout']['attribute_layout'], overlay['overlays']['format']);
+  var captureBase = overlay['capture_base'];
+  iterateFormat(overlay['overlays']['layout']['attribute_layout'], overlay['overlays']['format'], captureBase['attributes']);
   iterateConformance(overlay['overlays']['layout']['attribute_layout'], overlay['overlays']['conformance']);
   parseCells(overlay['overlays']['template']['attribute_cells'], a, overlay['overlays']['layout']['attribute_layout']['elements']);
   parseLabel(registry, overlay['overlays']['label'], overlay['overlays']['conformance']);
