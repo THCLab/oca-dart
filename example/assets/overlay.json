@@ -188,8 +188,8 @@
               {
                 "type" : "container",
                 "args": {
-                  "width": "${scaleSize(225)}",
-                  "height": "${scaleSize(120)}"
+                  "width": "${scaleSize(235)}",
+                  "height": "${scaleSize(150)}"
                 },
                 "children" : [
                   {
@@ -402,7 +402,7 @@
                 "type" : "container",
                 "args": {
                   "width": "${scaleSize(735)}",
-                  "height": "${scaleSize(120)}"
+                  "height": "${scaleSize(150)}"
                 },
                 "children" : [
                   {
@@ -413,8 +413,7 @@
                         "id": "sex-edit",
                         "args": {
                           "value" : "${returnLabel('sex-edit', language ?? currentLanguage)[0]}",
-                          "items": "${returnLabel('sex-edit', language ?? currentLanguage)}",
-                          "onChanged" : "${chooseValue('sex', returnLabel('sex-edit', language ?? currentLanguage))}"
+                          "items": "${returnLabel('sex-edit', language ?? currentLanguage)}"
                         }
                       }
                     ]
