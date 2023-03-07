@@ -45,10 +45,10 @@ packages:
     dependency: transitive
     description:
       name: child_builder
-      sha256: c4719e8a11833f92d5f26f9db62d7f173fd908bf79e4c40ff99368e238f16e3b
+      sha256: "4cff75dd45a5103ad695f31e178ece6ffbf4cdae6b7458c0639d0e9b28a65d6a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0+3"
+    version: "2.0.1"
   clock:
     dependency: transitive
     description:
@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.1"
+  execution_timer:
+    dependency: transitive
+    description:
+      name: execution_timer
+      sha256: "24d7224d9ec7d0fec79f6d0d9a7fac51fa881464d00548bb6d5819cd85ec3ef5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2+1"
   fake_async:
     dependency: transitive
     description:
@@ -204,26 +212,27 @@ packages:
     dependency: transitive
     description:
       name: json_class
-      sha256: "2a0119bf2bde0e0335ce181a745ec23f703d33a94bb4e440f4cb1f4ffe6c00d0"
+      sha256: "088d4e6177451109f7b42607b3eb870d6efec44fe0c3c5e7d950b6309cc754dd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4+1"
+    version: "2.1.6+1"
   json_conditional:
     dependency: transitive
     description:
       name: json_conditional
-      sha256: "79c39e1e5888c214cb2e846cff6a4b161bf1800667f2d4befb9a2d6eb6d6590a"
+      sha256: "8651a01ff86528ed857df9f25a261053c0d41e46382da0d313b0ff90c70fbd31"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0+21"
+    version: "2.1.1+5"
   json_dynamic_widget:
     dependency: transitive
     description:
-      name: json_dynamic_widget
-      sha256: "1e9fb4d330bbb182d12e97fc9b251724c239e00881f62dfb4e003b7e2fbf0535"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.7+2"
+      path: "."
+      ref: main
+      resolved-ref: "0a57bdcb859deb2fcfe41d05c641f5d3f0d12e53"
+      url: "https://github.com/peiffer-innovations/json_dynamic_widget"
+    source: git
+    version: "6.0.2"
   json_path:
     dependency: transitive
     description:
@@ -236,18 +245,18 @@ packages:
     dependency: transitive
     description:
       name: json_schema2
-      sha256: "04a6ed33fdf932262923d7b4d266b26f83eb1f56d79d86558252b22cfd19b8c0"
+      sha256: "8b82ad9bdae38b468608c9e460bddad01bc4b89660014fb1f23d96181d30224b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2+21"
+    version: "2.0.3+2"
   json_theme:
     dependency: transitive
     description:
       name: json_theme
-      sha256: b80982abebaccbaf922a2b495828b3fced547efd9b6e499419a06c3a56f97e30
+      sha256: "98668a8048e51e6e711efe0fc0c088506797904486d3bf8a10b7fbe33738f710"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.3+5"
+    version: "5.0.0+2"
   lints:
     dependency: transitive
     description:
@@ -355,10 +364,10 @@ packages:
     dependency: transitive
     description:
       name: rest_client
-      sha256: "4da12a81ee153509584e7ed1207de4e0e4e74990927c5453e1ec3076277bce42"
+      sha256: a5ba0823c55ceaaba8886b1d3e749deed5ab8a17befe9e457bbc2c880493b265
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0+8"
+    version: "2.2.1+5"
   rfc_6901:
     dependency: transitive
     description:
@@ -424,10 +433,10 @@ packages:
     dependency: transitive
     description:
       name: template_expressions
-      sha256: "309c01189826ca07f704d3c886404ff9e7290059d44ed6446a44aa66c956a1da"
+      sha256: bc9c00f2f8cc5bdd01d24ca9aa540c5be8c0582cbe46b8c00050afd582e79f4e
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0+2"
+    version: "2.2.1+2"
   term_glyph:
     dependency: transitive
     description:
@@ -496,10 +505,10 @@ packages:
     dependency: transitive
     description:
       name: yaon
-      sha256: "3fe4c643f5e754c6f1af2f183aae541a08a40320e14e53f000b2d1ab728979bf"
+      sha256: "2fd803f305f6afdd9714c28903c93d724006179ce2503704f42498d2f93d235a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1+9"
+    version: "1.0.2+1"
 sdks:
-  dart: ">=2.18.5 <3.0.0"
+  dart: ">=2.19.0 <3.0.0"
   flutter: ">=2.8.0"
