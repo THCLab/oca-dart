@@ -2,53 +2,53 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:oca_dart/bridge_generated.dart';
 import 'package:oca_dart/functions.dart';
 import 'package:oca_dart/oca_dart.dart';
 import 'package:oca_dart/widget_data.dart';
 
 void main() async{
-  final _ocaDartPlugin = OcaDart();
-  WidgetData widgetData = await _ocaDartPlugin.initialSteps();
-  print(widgetData.registry.values);
-  runApp(MyApp(widgetData: widgetData,));
+  //WidgetData widgetData = await OcaDartPlugin.performInitialSteps('x');
+  //print(widgetData.registry.values);
+  WidgetsFlutterBinding.ensureInitialized();
+  final OcaBundle bundle = await OcaDartPlugin.loadOca(json: await rootBundle.loadString('assets/rightjson.json'));
+  runApp(MyApp(/*widgetData: widgetData,*/ bundle: bundle ,));
 }
 
 class MyApp extends StatefulWidget {
-  final WidgetData widgetData;
-  const MyApp({super.key, required this.widgetData});
+  //final WidgetData widgetData;
+  final OcaBundle bundle;
+  const MyApp({super.key, /*required this.widgetData,*/ required this.bundle});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _ocaDartPlugin = OcaDart();
-  late WidgetData widgetData;
+  //late WidgetData widgetData;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    testMethod();
   }
-  
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    try {
-      platformVersion =
-          await _ocaDartPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-    if (!mounted) return;
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+  Future<void> testMethod() async {
+    print(widget.bundle);
+    var captureBase = await widget.bundle.captureBase();
+    var overlays = await widget.bundle.overlays();
+    for( var overlay in overlays){
+      var x = await overlay.field0;
+      print(overlay);
+    }
+    var attrs = await captureBase.attributes();
+    var assigner = await attrs.get(key: 'assigner');
+    print(assigner);
   }
 
   @override
   Widget build(BuildContext context) {
+
     
     return MaterialApp(
       home: Scaffold(
@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: getWidgetFromJSON(widget.widgetData, context) ?? Container()
+          //child: getWidgetFromJSON(widget.widgetData, context) ?? Container()
         ),
       ),
     );

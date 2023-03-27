@@ -1,5 +1,5 @@
 message("-- Linking Rust")
-set(CRATE_NAME "dartoca")
+set(CRATE_NAME "ocadart")
 set(CRATE_NAME ${CRATE_NAME} PARENT_SCOPE)
 if(CRATE_STATIC)
     add_library(${CRATE_NAME} STATIC IMPORTED GLOBAL)

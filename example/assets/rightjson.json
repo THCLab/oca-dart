@@ -1,0 +1,263 @@
+{
+    "version": "OCAB10000023_",
+    "said": "E_YYTwVcxRyBuIljiVj3VhDbVlTYWHfeIu4b7p86o57o",
+    "capture_base": {
+      "said": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+      "type": "spec/capture_base/1.0",
+      "classification": "",
+      "attributes": {
+        "assigner": "Text",
+        "code": "Text",
+        "device": "Text",
+        "effectiveDateTime": "DateTime",
+        "identifier": "Text",
+        "issued": "DateTime",
+        "performer": "Text",
+        "profile": "Text",
+        "resourceType": "Text",
+        "status": "Text",
+        "subject": "Text",
+        "valueQuantity_14745-4": "Numeric",
+        "valueQuantity_9059-7": "Numeric"
+      },
+      "flagged_attributes": [
+        "assigner",
+        "effectiveDateTime",
+        "identifier",
+        "issued",
+        "profile"
+      ]
+    },
+    "overlays": {
+      "character_encoding": {
+        "said": "EiopJFYhcitXAVvb3bR0OetaplpwK6m6xUS60ehBjKdI",
+        "type": "spec/overlays/character_encoding/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_character_encoding": {
+          "assigner": "utf-8",
+          "code": "utf-8",
+          "device": "utf-8",
+          "effectiveDateTime": "utf-8",
+          "identifier": "utf-8",
+          "issued": "utf-8",
+          "performer": "utf-8",
+          "profile": "utf-8",
+          "resourceType": "utf-8",
+          "status": "utf-8",
+          "subject": "utf-8",
+          "valueQuantity_14745-4": "utf-8",
+          "valueQuantity_9059-7": "utf-8"
+        }
+      },
+      "meta": [
+        {
+          "said": "EJvDQt2cwWa4sxAAZcB0MkfGhipertEmoFMapu5xbkoQ",
+          "language": "eng",
+          "type": "spec/overlays/meta/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "description": "Measurements and simple assertions made about a patient, device or other subject.",
+          "name": "Continuous Glucose Monitoring",
+          "resource": "urn:oid:2.16.840.1.113883"
+        },
+        {
+          "said": "EVvL52IU7AFKKLz6H88dEw0zB0tc14XguvU06Pgbcx9Y",
+          "language": "fin",
+          "type": "spec/overlays/meta/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "description": "Potilasta, laitetta tai muuta kohdetta koskevat mittaukset ja yksinkertaiset väitteet.",
+          "name": "Jatkuva glukoosin seuranta",
+          "resource": "urn:hl7-org:fhir:r4"
+        }
+      ],
+      "label": [
+        {
+          "said": "EYr1KjYkw4H4YqfTNZPp3rnuG4c7kxjPeVz8RTlOKycA",
+          "language": "eng",
+          "type": "spec/overlays/label/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_labels": {
+            "assigner": "Organization that issued id (may be just text)",
+            "code": "Type of observation (code / type)",
+            "device": "(Measurement) Device",
+            "effectiveDateTime": "Clinically relevant Date/Time for observation",
+            "identifier": "Business Identifier for observation",
+            "issued": "Date/Time this version was made available",
+            "performer": "Who is responsible for the observation",
+            "profile": "Profiles this resource claims to conform to",
+            "resourceType": "Resource type",
+            "status": "registered / preliminary / final / amended +",
+            "subject": "Who and/or what the observation is about",
+            "valueQuantity_14745-4": "Actual result",
+            "valueQuantity_9059-7": "Actual result"
+          },
+          "attribute_categories": [],
+          "category_labels": {}
+        },
+        {
+          "said": "ErX3gj19qWWgIJ4ojrSZGpl6VLQmBPHkr8bbn7vP2v-g",
+          "language": "fin",
+          "type": "spec/overlays/label/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_labels": {
+            "assigner": "Tunnuksen myöntänyt organisaatio (voi olla vain tekstiä)",
+            "code": "Havainnon tyyppi (koodi / tyyppi)",
+            "device": "(Mittaus) Laite",
+            "effectiveDateTime": "Kliinisesti merkityksellinen tarkkailun päivämäärä/aika",
+            "identifier": "Yrityksen tunniste havainnointia varten",
+            "issued": "Päivämäärä/aika, jolloin tämä versio julkaistiin",
+            "performer": "Kuka vastaa havainnoista",
+            "profile": "Profiilit, joita tämä resurssi väittää noudattavan",
+            "resourceType": "Resurssin tyyppi",
+            "status": "rekisteröity / alustava / lopullinen / muutettu +",
+            "subject": "Kenestä ja/tai mistä havainnolla on kyse",
+            "valueQuantity_14745-4": "Todellinen tulos",
+            "valueQuantity_9059-7": "Todellinen tulos"
+          },
+          "attribute_categories": [],
+          "category_labels": {}
+        }
+      ],
+      "information": [
+        {
+          "said": "EMeW9baC8B4Bc8RsI-BBxhwGmIBwt18pGVbQh2_5mwoM",
+          "language": "eng",
+          "type": "spec/overlays/information/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_information": {
+            "assigner": "Organization that issued/manages the identifier.",
+            "code": "Describes what was observed. Sometimes this is called the observation \"name\".",
+            "device": "The device used to generate the observation data.",
+            "effectiveDateTime": "The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the \"physiologically relevant time\". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.",
+            "identifier": "A unique identifier assigned to this observation.",
+            "issued": "The date and time this version of the observation was made available to providers, typically after the results have been reviewed and verified.",
+            "performer": "Who was responsible for asserting the observed value as \"true\".",
+            "profile": "A list of profiles (references to StructureDefinition resources) that this resource claims to conform to. The URL is a reference to StructureDefinition.url.",
+            "resourceType": "The type of base resource.",
+            "status": "The status of the result value.",
+            "subject": "The patient, or group of patients, location, or device this observation is about and into whose record the observation is placed. If the actual focus of the observation is different from the subject (or a sample of, part, or region of the subject), the focus element or the code itself specifies the actual focus of the observation.",
+            "valueQuantity_14745-4": "The information determined as a result of making the observation, if the information has a simple value.",
+            "valueQuantity_9059-7": "The information determined as a result of making the observation, if the information has a simple value."
+          }
+        },
+        {
+          "said": "EDI6AZQ6z6qZcANW9srH8cfrO9rBgL2l70PxJZD1kVmA",
+          "language": "fin",
+          "type": "spec/overlays/information/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_information": {
+            "assigner": "Tunnisteen myöntänyt/hallinnut organisaatio.",
+            "code": "Kuvaa mitä havaittiin. Joskus tätä kutsutaan havainnon \"nimeksi\".",
+            "device": "Havaintotietojen tuottamiseen käytetty laite.",
+            "effectiveDateTime": "Havaitun arvon aika tai ajanjakso väitetään olevan tosi. Biologisille aiheille - esim. ihmispotilaat - tätä kutsutaan yleensä \"fysiologisesti merkitykselliseksi ajaksi\". Tämä on yleensä joko toimenpiteen tai näytteenoton aika, mutta hyvin usein päivämäärän/ajan lähdettä ei tiedetä, vain itse päivämäärä/aika.",
+            "identifier": "Tälle havainnolle määritetty yksilöllinen tunniste.",
+            "issued": "Päivämäärä ja kellonaika, jolloin tämä havainnon versio annettiin palveluntarjoajien saataville, yleensä sen jälkeen, kun tulokset on tarkistettu ja vahvistettu.",
+            "performer": "Kuka oli vastuussa havaitun arvon väittämisestä \"todeksi\".",
+            "profile": "Luettelo profiileista (viittaukset StructureDefinition-resursseihin), joita tämä resurssi väittää noudattavan. URL-osoite on viittaus osoitteeseen StructureDefinition.url",
+            "resourceType": "Perusresurssin tyyppi.",
+            "status": "Tulosarvon tila.",
+            "subject": "Potilas tai potilasryhmä, sijainti tai laite, josta tämä havainto liittyy ja jonka tietueeseen havainto on sijoitettu. Jos havainnon todellinen fokus on eri kuin kohde (tai kohteen näyte, osa tai alue), fokuselementti tai koodi itse määrittelee havainnon todellisen fokuksen.",
+            "valueQuantity_14745-4": "Havainnon tekemisen tuloksena määritetty tieto, jos tiedolla on yksinkertainen arvo.",
+            "valueQuantity_9059-7": "Havainnon tekemisen tuloksena määritetty tieto, jos tiedolla on yksinkertainen arvo."
+          }
+        }
+      ],
+      "conformance": {
+        "said": "ENgTRuVSxQcHTQnCStOaUhaP1aVsm0tvruoEtrZ9dV84",
+        "type": "spec/overlays/conformance/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_conformance": {
+          "assigner": "O",
+          "code": "O",
+          "device": "O",
+          "effectiveDateTime": "O",
+          "identifier": "O",
+          "issued": "O",
+          "performer": "O",
+          "profile": "O",
+          "resourceType": "O",
+          "status": "O",
+          "subject": "O",
+          "valueQuantity_14745-4": "O",
+          "valueQuantity_9059-7": "O"
+        }
+      },
+      "entry_code": {
+        "said": "ELBcKxPFz0AwkZnurmylS7nuPzOiu66F_fScYYp1YmWI",
+        "type": "spec/overlays/entry_code/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_entry_codes": {
+          "code": [
+            "",
+            "14745-4",
+            "9059-7"
+          ],
+          "resourceType": [
+            "MedicationAdministration",
+            "Observation"
+          ],
+          "status": [
+            "amended",
+            "completed",
+            "final",
+            "preliminary",
+            "registered"
+          ]
+        }
+      },
+      "entry": [
+        {
+          "said": "Eb1FxQtezss6YnDgBWiuy54YrM9Ju7vdK4TRrWLEH92M",
+          "language": "eng",
+          "type": "spec/overlays/entry/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_entries": {
+            "code": {
+              "14745-4": "Glucose [Moles/volume] in Body fluid",
+              "9059-7": "Carbohydrate intake Estimated"
+            },
+            "profile": {
+              "http": "//roche.com/fhir/rdc/StructureDefinition/medication-administration"
+            },
+            "resourceType": {
+              "MedicationAdministration": "Medication Administration",
+              "Observation": "Observation"
+            },
+            "status": {
+              "amended": "Amended",
+              "completed": "Completed",
+              "final": "Final",
+              "preliminary": "Preliminary",
+              "registered": "Registered"
+            }
+          }
+        },
+        {
+          "said": "EJFNxM3Agv-0OxCjQn72hTvMzao5Aatl56CNvI08X2-Q",
+          "language": "fin",
+          "type": "spec/overlays/entry/1.0",
+          "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+          "attribute_entries": {
+            "code": {
+              "14745-4": "Glukoosi [Moolia/tilavuus] Kehon nesteessä",
+              "9059-7": "Arvioitu hiilihydraattien saanti"
+            },
+            "profile": {
+              "http": "//roche.com/fhir/rdc/StructureDefinition/medication-administration"
+            },
+            "resourceType": {
+              "MedicationAdministration": "Lääkkeiden antaminen",
+              "Observation": "Havainto"
+            },
+            "status": {
+              "amended": "Muutettu",
+              "completed": "Valmis",
+              "final": "Lopullinen",
+              "preliminary": "Alustava",
+              "registered": "Rekisteröity"
+            }
+          }
+        }
+      ]
+    }
+  }
+  
