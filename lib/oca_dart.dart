@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:oca_dart/widget_data.dart';
 
 import 'bridge_generated.dart';
@@ -44,11 +45,8 @@ class OcaDartPlugin {
     return await api.getMethodOcaMap(that: that, key: key);
   }
 
-  static Future<String> getFormFromAttributes (OcaMap map){
-    // String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "label":"scsv1", "children": [{"type":"column", "label":"column1", "children":[]}]}] }';
-    // Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
-    // print(jsonMap['elements'][0]['children'][0]);
-    return f.getFormFromAttributes(map);
+  static Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry){
+    return f.getFormFromAttributes(map, registry);
   }
 
 

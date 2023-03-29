@@ -235,19 +235,58 @@ Future<Uint8List> getZipFromHttp (String digest) async{
 
 }
 
-Future<String> getFormFromAttributes (OcaMap map) async{
-  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "label":"scsv1", "children": [{"type":"column", "label":"column1", "children":[]}]}] }';
+Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
+  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"column", "children":[]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
-  print(jsonMap['elements'][0]['children'][0]);
-  for(String attribute in await map.getKeys()){
-
+  //print(jsonMap['elements'][0]['children'][0]);
+  print(map["capture_base"]["attributes"]);
+  List<dynamic> labelOverlay = map["overlays"]["label"];
+  jsonMap['elements'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], registry));
+  for(String attribute in map["capture_base"]["attributes"].keys){
+    parseLabelOverlay(labelOverlay, registry, attribute);
+    print(registry.values);
+    jsonMap['elements'][0]['children'][0]['children'].add(getFormField(attribute, registry));
+    jsonMap['elements'][0]['children'][0]['children'].add(getSizedBox());
+    //print(jsonMap['elements'][0]['children'][0]['children']);
   }
-  return jsonOverlay;
+  jsonOverlay = jsonEncode(jsonMap);
+  return jsonMap;
 }
 
-String getFormField(String attributeName){
-  String textFormFieldJson = '{"type":"column, "children": [{"type": "text","args": {"text":"label"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {}}]}';
+String getFormField(String attributeName, JsonWidgetRegistry registry){
+  String textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}"}]}';
   return textFormFieldJson;
+}
+
+String getSizedBox(){
+  String textSizedBoxJson = '{"type" : "sized_box","args" : {"height" : "\${scaleSize(20)}"}}';
+  return textSizedBoxJson;
+}
+
+String getDropdownMenu(String attributeName, List<String> attributeValues){
+  String textDropdownJson = '';
+  return textDropdownJson;
+}
+
+String parseMetaOverlay(List<dynamic> metaOverlay, JsonWidgetRegistry registry){
+  List<String> languages = [];
+  for (Map<String, dynamic> overlay in metaOverlay){
+    var language = overlay["language"];
+    registry.setValue("formTitle-$language", overlay["name"]);
+    languages.add(overlay["language"]);
+  }
+  registry.setValue("currentLanguage", metaOverlay[0]['language']);
+  registry.setValue("languages", languages);
+  //print(registry.values);
+  String textFormTitleJson = '{"type" : "row","args" : {"mainAxisAlignment" : "spaceBetween"},"children" : [{"type" : "text","args": {"text" : "\${returnLabel(\'formTitle\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(225)}","height": "\${scaleSize(120)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "language","args": {"value" : "eng","items": ["eng","fin"]}}]} ]}]}';
+  return textFormTitleJson;
+}
+
+void parseLabelOverlay(List<dynamic> labelOverlay, JsonWidgetRegistry registry, String attributeName){
+  for (Map<String, dynamic> overlay in labelOverlay){
+    var language = overlay["language"];
+    registry.setValue("$attributeName-$language", overlay["attribute_labels"][attributeName]);
+  }
 }
 
 // String parseLabelOverlay(String attributeName){
