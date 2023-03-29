@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:form_validation/form_validation.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:http/http.dart' as http;
+import 'package:oca_dart/bridge_generated.dart';
 import 'package:oca_dart/exceptions.dart';
 import 'package:oca_dart/widget_data.dart';
 import 'dart:ui';
@@ -233,6 +234,25 @@ Future<Uint8List> getZipFromHttp (String digest) async{
   }
 
 }
+
+Future<String> getFormFromAttributes (OcaMap map) async{
+  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "label":"scsv1", "children": [{"type":"column", "label":"column1", "children":[]}]}] }';
+  Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
+  print(jsonMap['elements'][0]['children'][0]);
+  for(String attribute in await map.getKeys()){
+
+  }
+  return jsonOverlay;
+}
+
+String getFormField(String attributeName){
+  String textFormFieldJson = '{"type":"column, "children": [{"type": "text","args": {"text":"label"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {}}]}';
+  return textFormFieldJson;
+}
+
+// String parseLabelOverlay(String attributeName){
+//
+// }
 
 Widget getWidgetFromJSON (WidgetData data, BuildContext context){
   var widget = JsonWidgetData.fromDynamic(data.jsonData, registry: data.registry);

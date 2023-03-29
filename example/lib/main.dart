@@ -26,6 +26,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   //late WidgetData widgetData;
+  String widgetJson = "";
 
   @override
   void initState() {
@@ -39,11 +40,17 @@ class _MyAppState extends State<MyApp> {
     var overlays = await widget.bundle.overlays();
     for( var overlay in overlays){
       var x = await overlay.field0;
-      print(overlay);
+
+      print(overlay.field0);
     }
     var attrs = await captureBase.attributes();
+    print(OcaDartPlugin.getFormFromAttributes(attrs));
+    var y = await OcaDartPlugin.getKeysMethodOcaMap(that: attrs);
+    var z = await OcaDartPlugin.getMethodOcaMap(that: attrs, key: "status");
+    print(y);
+    print(z);
     var assigner = await attrs.get(key: 'assigner');
-    print(assigner);
+    print(assigner.runtimeType);
   }
 
   @override
