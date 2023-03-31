@@ -20,10 +20,16 @@ void main() async{
   var navigatorKey = GlobalKey<NavigatorState>();
   registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
   registry.registerFunction('returnLabel', ({args, required registry}) {
-    print("${args![0]}-${args[1]}");
+    //print("${args![0]}-${args[1]}");
     ////print(registry.values);
     //print(registry.debugLabel);
     return registry.getValue("${args![0]}-${args[1]}");
+  } );
+  registry.registerFunction('returnLanguages', ({args, required registry}) {
+    //print("${args![0]}-${args[1]}");
+    ////print(registry.values);
+    //print(registry.debugLabel);
+    return registry.getValue("languages");
   } );
   // registry.registerFunctions({
   //   show_date_picker_fun.key: show_date_picker_fun.body,
@@ -71,7 +77,7 @@ void main() async{
   //var attrs = await captureBase.attributes();
   var jsonData = await OcaDartPlugin.getFormFromAttributes(ocaMap, registry);
   WidgetData widgetData = WidgetData(registry: registry, jsonData: jsonData);
-  print(widgetData.jsonData);
+  //print(widgetData.jsonData);
   runApp(MyApp(widgetData: widgetData,bundle: bundle));
 }
 
@@ -97,14 +103,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> testMethod() async {
-    print(widget.bundle);
+    //print(widget.bundle);
     var captureBase = await widget.bundle.captureBase();
     var overlays = await widget.bundle.overlays();
     for(OcaOverlay overlay in overlays){
       var x = await overlay.field0;
       //var p = overlay[""];
 
-      print(overlay.field0);
+      //print(overlay.field0);
     }
     var attrs = await captureBase.attributes();
     //print(await OcaDartPlugin.getFormFromAttributes(attrs));
@@ -123,7 +129,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     print(widget.widgetData.registry.values);
     var w = JsonWidgetData.fromDynamic(widget.widgetData.jsonData["elements"][0], registry: widget.widgetData.registry);
-    print(w);
+    //print(w);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(

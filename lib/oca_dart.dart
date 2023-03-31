@@ -26,10 +26,10 @@ class OcaDartPlugin {
     return bytes;
   }
 
-  static Future<WidgetData> performInitialSteps(String path) async{
-    final widgetData = f.initialSteps('x');
-    return widgetData;
-  }
+  // static Future<WidgetData> performInitialSteps(String path) async{
+  //   final widgetData = f.initialSteps('x');
+  //   return widgetData;
+  // }
 
   static Future<OcaBundle> loadOca({required String json, dynamic hint}) async {
     return await api.loadOca(json: json);
