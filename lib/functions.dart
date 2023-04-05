@@ -16,6 +16,7 @@ import 'custom_widgets/date_picker.dart' as show_date_picker_fun;
 import 'custom_widgets/slider_builder.dart';
 import 'custom_widgets/time_picker.dart' as show_time_picker_fun;
 import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
+import 'my_custom_validator.dart';
 
 Map<String, dynamic> obtainedValues = {};
 
@@ -61,7 +62,12 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
     if(map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
       parseEntryOverlay(entryOverlay, registry, attribute);
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
-    }else{
+    }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
+    }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDatePicker(attribute, registry, conformanceOverlay));
+    }
+    else{
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
     }
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
@@ -91,9 +97,24 @@ String getDropdownMenu(String attributeName, List<dynamic> attributeValues){
   return textDropdownJson;
 }
 
-String getNumericFormField(String attributeName, JsonWidgetRegistry registry){
-  String textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}"}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}"}}]}';
+String getNumericFormField(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
+  String textFormFieldJson = '';
+  if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
+    textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}", "args":{"keyboardType":"number", "validators": [{"type": "required"},{"type":"regex","regex":"[+-]?([0-9]*[.])?[0-9]+"}]}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }else{
+    textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}", "args":{"keyboardType":"number", "validators": [{"type":"regex","regex":"[+-]?([0-9]*[.])?[0-9]+"}]}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }
   return textFormFieldJson;
+}
+
+String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
+  String textDatePickerJson='';
+  if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
+    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"validators": [{"type": "required"}],"initialValue": "\${pickedDate}","decoration" : {"readOnly" : "true","suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }else{
+    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"initialValue": "\${pickedDate}","decoration" : {"readOnly" : "true","suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }
+  return textDatePickerJson;
 }
 
 String getSubmitButton(){
@@ -219,90 +240,13 @@ Future<WidgetData> initialSteps() async{
         print(registry.getValue("obtainedValues"));
       }
   });
-  registry.registerFunction('nooped', ({args, required registry}) {
-    print(registry.getValue("language"));
-  } );
-  // registry.registerFunction('returnValues', ({args, required registry}) {
-  //   Map<String, dynamic> values = {};
-  //   Map<String, dynamic> registryValues = registry.values;
-  //   for(String key in registryValues.keys){
-  //     print(key);
-  //     if(key.startsWith("edit")){
-  //       values[registryValues[key]] = registryValues[key];
-  //     }
-  //   }
-  //   registry.setValue("obtainedValues", values);
-  //   print(registry.getValue("obtainedValues"));
-  // } );
+  Validator.registerCustomValidatorBuilder(
+    MyCustomValidator.type,
+    MyCustomValidator.fromDynamic,
+  );
   return(WidgetData(registry: registry, jsonData: {}));
 }
 
 Map<String, dynamic> returnObtainedValues(){
   return obtainedValues;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class MyFormRenderPage extends StatefulWidget {
-  final Map<String, dynamic> jsonData;
-  final JsonWidgetRegistry registry;
-  const MyFormRenderPage({required this.jsonData, required this.registry, Key? key,}) : super(key: key);
-
-  @override
-  State<MyFormRenderPage> createState() => _MyFormRenderPageState();
-}
-
-class _MyFormRenderPageState extends State<MyFormRenderPage> {
-  late var _data;
-  late var _registry;
-
-  @override
-  void initState() {
-    super.initState();
-    _registry = widget.registry;
-    _data = JsonWidgetData.fromDynamic(widget.jsonData, registry: _registry);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _registry.setValue('myContext', context);
-    print(_registry.getValue('myContext'));
-    print(_registry.getValue('editAssigner'));
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("My App"),
-      ),
-      body: Center(
-        child: CinemaWidget(registry: _registry, jsonData: widget.jsonData,),
-      ),
-    );
-  }
-}
-
-class CinemaWidget extends StatefulWidget {
-  final Map<String, dynamic> jsonData;
-  final JsonWidgetRegistry registry;
-  const CinemaWidget({required this.jsonData, required this.registry, Key? key,}) : super(key: key);
-
-  @override
-  State<CinemaWidget> createState() => _CinemaWidgetState();
-}
-
-class _CinemaWidgetState extends State<CinemaWidget> {
-  late var _data;
-  late var _registry;
-
-  @override
-  void initState() {
-    super.initState();
-    print(widget.jsonData);
-    _registry = widget.registry;
-    _data = JsonWidgetData.fromDynamic(widget.jsonData, registry: _registry);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var widget = JsonWidgetData.fromDynamic(_data, registry: _registry);
-    return widget!.build(context: context);
-  }
 }
