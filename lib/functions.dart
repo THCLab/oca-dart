@@ -196,7 +196,7 @@ void parseEntryOverlay(List<dynamic> entryOverlay, JsonWidgetRegistry registry, 
 
 
 Widget getWidgetFromJSON (WidgetData data, BuildContext context){
-  var widget = JsonWidgetData.fromDynamic(data.jsonData, registry: data.registry);
+  var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
   return widget!.build(context: context);
 }
 
