@@ -248,5 +248,10 @@ Future<WidgetData> initialSteps() async{
 }
 
 Map<String, dynamic> returnObtainedValues(){
+  for(String key in obtainedValues.keys){
+    if(key.contains('.error')){
+      obtainedValues.remove(key);
+    }
+  }
   return obtainedValues;
 }
