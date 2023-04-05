@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: args
-      sha256: "139d809800a412ebb26a3892da228b2d0ba36f0ef5d9a82166e5e52ec8d61611"
+      sha256: "4cab82a83ffef80b262ddedf47a0a8e56ee6fbf7fe21e6e768b02792034dd440"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.4.0"
   asn1lib:
     dependency: transitive
     description:
@@ -125,10 +125,10 @@ packages:
     dependency: transitive
     description:
       name: execution_timer
-      sha256: "24d7224d9ec7d0fec79f6d0d9a7fac51fa881464d00548bb6d5819cd85ec3ef5"
+      sha256: e2fb9e7e98f5e3925b3adc11584df01daa2bfe8fae7dba74917d6b60e475ebac
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2+1"
+    version: "1.0.2+2"
   fake_async:
     dependency: transitive
     description:
@@ -244,51 +244,50 @@ packages:
     dependency: transitive
     description:
       name: json_class
-      sha256: "088d4e6177451109f7b42607b3eb870d6efec44fe0c3c5e7d950b6309cc754dd"
+      sha256: "71bacbe9465d23129279dc2c59a46d2df8c94ad959666f842b38e99fafe35662"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6+1"
+    version: "2.2.1+1"
   json_conditional:
     dependency: transitive
     description:
       name: json_conditional
-      sha256: "8651a01ff86528ed857df9f25a261053c0d41e46382da0d313b0ff90c70fbd31"
+      sha256: "50ea0f9a552a7ac52a992021a5ffcd072145760f436f5cf89086a009718b5023"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1+5"
+    version: "2.1.1+7"
   json_dynamic_widget:
     dependency: transitive
     description:
-      path: "."
-      ref: main
-      resolved-ref: "0a57bdcb859deb2fcfe41d05c641f5d3f0d12e53"
-      url: "https://github.com/peiffer-innovations/json_dynamic_widget"
-    source: git
-    version: "6.0.2"
+      name: json_dynamic_widget
+      sha256: dc8561d23d060736a3225e898d444090a589ca5cd45f83349da1e8b6d7caab48
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.4+3"
   json_path:
     dependency: transitive
     description:
       name: json_path
-      sha256: "75244c46c757efbefc4eb3a20baac22c4e0a27c9c1fcca240e0dce0dbcbe1ae3"
+      sha256: "1f5a47f8d56f28ddfef5f5d7cd3d14f101dc9694aa2728e415d3d749f6abbddb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.4"
   json_schema2:
     dependency: transitive
     description:
       name: json_schema2
-      sha256: "8b82ad9bdae38b468608c9e460bddad01bc4b89660014fb1f23d96181d30224b"
+      sha256: "2c9e030e098520852fceb1d2a96f5d64268fb6395074c754f786a83831d627f5"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3+2"
+    version: "2.0.3+7"
   json_theme:
     dependency: transitive
     description:
       name: json_theme
-      sha256: "98668a8048e51e6e711efe0fc0c088506797904486d3bf8a10b7fbe33738f710"
+      sha256: "954ef01b73f4f3f8081f885812b360095919b459e6d07853a9b21b1fc9e87301"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0+2"
+    version: "5.0.2+2"
   lints:
     dependency: transitive
     description:
@@ -380,10 +379,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: db7306cf0249f838d1a24af52b5a5887c5bf7f31d8bb4e827d071dc0939ad346
+      sha256: c3120a968135aead39699267f4c74bc9a08e4e909e86bc1b0af5bfd78691123c
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.2"
+    version: "3.7.2"
   pool:
     dependency: transitive
     description:
@@ -420,10 +419,10 @@ packages:
     dependency: transitive
     description:
       name: rest_client
-      sha256: a5ba0823c55ceaaba8886b1d3e749deed5ab8a17befe9e457bbc2c880493b265
+      sha256: ccf0bc0c1145ceb94916a58095bce8f26030653038edd5b4aa995117251ef41f
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1+5"
+    version: "2.2.1+7"
   rfc_6901:
     dependency: transitive
     description:
@@ -513,10 +512,10 @@ packages:
     dependency: transitive
     description:
       name: template_expressions
-      sha256: bc9c00f2f8cc5bdd01d24ca9aa540c5be8c0582cbe46b8c00050afd582e79f4e
+      sha256: ad48529aafe685826ca3d3141d9c18a67ce22242f55146a5d3cfa68d11e5d0e1
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1+2"
+    version: "2.2.3+2"
   term_glyph:
     dependency: transitive
     description:
@@ -601,10 +600,10 @@ packages:
     dependency: transitive
     description:
       name: yaon
-      sha256: "2fd803f305f6afdd9714c28903c93d724006179ce2503704f42498d2f93d235a"
+      sha256: "1b0946e7ff0111e10a75ed47c4bdffc56487fd89a870e83786383c7a0bc402b8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2+1"
+    version: "1.0.2+2"
 sdks:
   dart: ">=3.0.0-0 <4.0.0"
   flutter: ">=2.8.0"

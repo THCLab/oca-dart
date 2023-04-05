@@ -13,24 +13,33 @@ import 'package:oca_dart/widget_data.dart';
 
 
 void main() async{
-  //WidgetData widgetData = await OcaDartPlugin.performInitialSteps('x');
+  //WidgetData widgetData = await OcaDartPlugin.performInitialSteps();
   //print(widgetData.registry.values);
-  WidgetsFlutterBinding.ensureInitialized();
-  var registry = JsonWidgetRegistry();
-  var navigatorKey = GlobalKey<NavigatorState>();
-  registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
-  registry.registerFunction('returnLabel', ({args, required registry}) {
-    //print("${args![0]}-${args[1]}");
-    ////print(registry.values);
-    //print(registry.debugLabel);
-    return registry.getValue("${args![0]}-${args[1]}");
-  } );
-  registry.registerFunction('returnLanguages', ({args, required registry}) {
-    //print("${args![0]}-${args[1]}");
-    ////print(registry.values);
-    //print(registry.debugLabel);
-    return registry.getValue("languages");
-  } );
+  // WidgetsFlutterBinding.ensureInitialized();
+  // var registry = JsonWidgetRegistry();
+  // var navigatorKey = GlobalKey<NavigatorState>();
+  // registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
+  // registry.registerFunction('returnLabel', ({args, required registry}) {
+  //   //print("${args![0]}-${args[1]}");
+  //   ////print(registry.values);
+  //   //print(registry.debugLabel);
+  //   return registry.getValue("${args![0]}-${args[1]}");
+  // } );
+  // registry.registerFunction('returnLanguages', ({args, required registry}) {
+  //   return registry.getValue("languages");
+  // } );
+  // registry.registerFunction('returnValues', ({args, required registry}) {
+  //   Map<String, dynamic> values = {};
+  //   Map<String, dynamic> registryValues = registry.values;
+  //   for(String key in registryValues.keys){
+  //     print(key);
+  //     if(key.startsWith("edit")){
+  //       values[registryValues[key]] = registryValues[key];
+  //     }
+  //   }
+  //   registry.setValue("obtainedValues", values);
+  //   print(registry.getValue("obtainedValues"));
+  // } );
   // registry.registerFunctions({
   //   show_date_picker_fun.key: show_date_picker_fun.body,
   //   show_time_picker_fun.key: show_time_picker_fun.body,
@@ -40,44 +49,22 @@ void main() async{
   //     final BuildContext context = registry.getValue(args![0]);
   //     final valid = Form.of(context).validate();
   //     registry.setValue('form_validation', valid);
-  //   },
-  //   'validateFormAndNavigate': ({args, required registry}) => () {
-  //     final BuildContext context = registry.getValue(args![0]);
-  //     final valid = Form.of(context).validate();
-  //     registry.setValue('form_validation', valid);
   //     if(valid){
-  //       registry.navigatorKey?.currentState!.pushNamed(args[1]);
+  //       registry.navigatorKey?.currentState!.pushNamed('/second');
+  //       //Navigator.pushNamed(navigatorKey.currentContext!, '/second');
   //     }
   //   },
-  //   'chooseValue': ({args, required registry}) => () {
-  //     print('weszło');
-  //     var variableName = args![0]; // np.sex
-  //     List values = args![1]; //np. [Female, Male, Unspecified]
-  //     var selectedIndex = values.indexOf(registry.getValue("$variableName-edit"));
-  //     List selectableValues = registry.getValue("selectable${toBeginningOfSentenceCase(variableName)}");
-  //     registry.setValue("picked${toBeginningOfSentenceCase(variableName)}", selectableValues[selectedIndex]);
-  //   }
   // });
-  // Validator.registerCustomValidatorBuilder(
-  //   RegexValidator.type,
-  //   RegexValidator.fromDynamic,
-  // );
-  // registry.registerCustomBuilder(
-  //   CustomSlider.type,
-  //   const JsonWidgetBuilderContainer(
-  //     builder: CustomSlider.fromDynamic,
-  //   ),
-  // );
+  // registry.registerFunction('nooped', ({args, required registry}) {
+  //   print(registry.getValue("language"));
+  // } );
+  WidgetData firstWidgetData = await OcaDartPlugin.performInitialSteps();
   final OcaBundle bundle = await OcaDartPlugin.loadOca(json: await rootBundle.loadString('assets/rightjson.json'));
   final String ocaBundle = await bundle.toJson();
   final ocaMap = jsonDecode(ocaBundle);
-  //print(ocaMap["overlays"]["label"]);
-  //print(bundle.toJson());
-  //var captureBase = await bundle.captureBase();
-  //var attrs = await captureBase.attributes();
-  var jsonData = await OcaDartPlugin.getFormFromAttributes(ocaMap, registry);
-  WidgetData widgetData = WidgetData(registry: registry, jsonData: jsonData);
-  //print(widgetData.jsonData);
+
+  var jsonData = await OcaDartPlugin.getFormFromAttributes(ocaMap, firstWidgetData.registry);
+  WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
   runApp(MyApp(widgetData: widgetData,bundle: bundle));
 }
 
@@ -129,7 +116,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     print(widget.widgetData.registry.values);
     var w = JsonWidgetData.fromDynamic(widget.widgetData.jsonData["elements"][0], registry: widget.widgetData.registry);
-    //print(w);
+    print(w);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -143,3 +130,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+

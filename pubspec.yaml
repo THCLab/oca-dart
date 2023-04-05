@@ -14,10 +14,7 @@ dependencies:
   flutter_rust_bridge: ^1.71.1
   form_validation: ^2.2.0+6
   http: ^0.13.5
-  json_dynamic_widget:
-    git:
-      url: https://github.com/peiffer-innovations/json_dynamic_widget
-      ref: main
+  json_dynamic_widget: ^6.0.4+3
   plugin_platform_interface: ^2.0.2
 
 dev_dependencies:

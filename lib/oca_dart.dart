@@ -26,10 +26,10 @@ class OcaDartPlugin {
     return bytes;
   }
 
-  // static Future<WidgetData> performInitialSteps(String path) async{
-  //   final widgetData = f.initialSteps('x');
-  //   return widgetData;
-  // }
+  static Future<WidgetData> performInitialSteps() async{
+    final widgetData = f.initialSteps();
+    return widgetData;
+  }
 
   static Future<OcaBundle> loadOca({required String json, dynamic hint}) async {
     return await api.loadOca(json: json);
@@ -47,6 +47,10 @@ class OcaDartPlugin {
 
   static Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry){
     return f.getFormFromAttributes(map, registry);
+  }
+
+  static Map<String, dynamic> returnObtainedValues(){
+    return f.returnObtainedValues();
   }
 
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_validation/form_validation.dart';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
@@ -16,34 +17,12 @@ import 'custom_widgets/slider_builder.dart';
 import 'custom_widgets/time_picker.dart' as show_time_picker_fun;
 import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
 
+Map<String, dynamic> obtainedValues = {};
+
 Future<Map<dynamic, dynamic>> getMapData(String path) async{
   final String mapString = await rootBundle.loadString(path);
   var mapData = await json.decode(mapString);
   return mapData;
-}
-
-void parseEntry(List entryOverlay, JsonWidgetRegistry registry) {
-  for(var entry in entryOverlay){
-    for (MapEntry attribute in entry['attribute_entries'].entries){
-      List entryTable = [];
-      String label = attribute.key;
-      for (MapEntry entry in attribute.value.entries){
-        entryTable.add(entry.value);
-      }
-      registry.setValue('$label-edit-${entry['language']}', entryTable);
-    }
-  }
-}
-
-void parseEntryCode(Map<String, dynamic> entryCodeOverlay, JsonWidgetRegistry registry){
-  for (MapEntry attribute in entryCodeOverlay.entries){
-    List selectTable = [];
-    String label = attribute.key;
-    for (dynamic entry in attribute.value){
-      selectTable.add(entry);
-    }
-    registry.setValue("selectable${toBeginningOfSentenceCase(label)}", selectTable);
-  }
 }
 
 Future<Uint8List> getZipFromHttp (String digest) async{
@@ -64,7 +43,7 @@ Future<Uint8List> getZipFromHttp (String digest) async{
 }
 
 Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
-  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"column", "children":[]}]}] }';
+  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
   //print(jsonMap['elements'][0]['children'][0]);
   //print(map["capture_base"]["attributes"]);
@@ -73,7 +52,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   List<dynamic> informationOverlay = map["overlays"]["information"];
   Map<String, dynamic> entryCodeOverlay = map["overlays"]["entry_code"];
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
-  jsonMap['elements'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], registry));
+  jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], registry));
   parseEntryCodeOverlay(entryCodeOverlay, registry);
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
@@ -81,12 +60,13 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
     //print(registry.values);
     if(map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
       parseEntryOverlay(entryOverlay, registry, attribute);
-      jsonMap['elements'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
     }else{
-      jsonMap['elements'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
     }
-    jsonMap['elements'][0]['children'][0]['children'].add(getSizedBox());
+    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
+  jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmitButton());
   jsonOverlay = jsonEncode(jsonMap);
   return jsonMap;
 }
@@ -94,7 +74,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
 String getFormField(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textFormFieldJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
-    textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}]}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+    textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","args":{"validators": [{"type": "required"}]},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
   }else{
     textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}"}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
   }
@@ -114,6 +94,11 @@ String getDropdownMenu(String attributeName, List<dynamic> attributeValues){
 String getNumericFormField(String attributeName, JsonWidgetRegistry registry){
   String textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}"}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}"}}]}';
   return textFormFieldJson;
+}
+
+String getSubmitButton(){
+  String textButtonJson = '{"type" : "row","args" : {"mainAxisAlignment" : "center"},"children" :[{"type":"save_context","args": {"key": "buttonContext"},"children": [{"type" : "set_value","args" : {"firstInfo" : "edit_message_1"},"children" : [{"type": "text_button","args": {"onPressed" : "\${validateForm(\'buttonContext\')}"},"child": {"type": "text","args": {"text": "SUBMIT"}}}]}]}]}';
+  return textButtonJson;
 }
 
 String parseMetaOverlay(List<dynamic> metaOverlay, JsonWidgetRegistry registry){
@@ -178,53 +163,146 @@ Widget getWidgetFromJSON (WidgetData data, BuildContext context){
   return widget!.build(context: context);
 }
 
-// Future<WidgetData> initialSteps(String path) async{
-//   WidgetsFlutterBinding.ensureInitialized();
-//   var registry = JsonWidgetRegistry();
-//   var navigatorKey = GlobalKey<NavigatorState>();
-//   registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
-//   registry.registerFunction('returnLabel', ({args, required registry}) {
-//     print("${args![0]}-${args[1]}");
-//     print(registry.values);
-//     print(registry.debugLabel);
-//     return registry.getValue("${args![0]}-${args[1]}");
-//   } );
-//   registry.registerFunctions({
-//     show_date_picker_fun.key: show_date_picker_fun.body,
-//     show_time_picker_fun.key: show_time_picker_fun.body,
-//     show_file_picker_fun.key: show_file_picker_fun.body,
-//     'validateForm': ({args, required registry}) => () {
-//       print(registry.values);
-//       final BuildContext context = registry.getValue(args![0]);
-//       final valid = Form.of(context).validate();
-//       registry.setValue('form_validation', valid);
-//     },
-//     'validateFormAndNavigate': ({args, required registry}) => () {
-//       final BuildContext context = registry.getValue(args![0]);
-//       final valid = Form.of(context).validate();
-//       registry.setValue('form_validation', valid);
-//       if(valid){
-//         registry.navigatorKey?.currentState!.pushNamed(args[1]);
-//       }
-//     },
-//     'chooseValue': ({args, required registry}) => () {
-//       print('weszło');
-//       var variableName = args![0]; // np.sex
-//       List values = args![1]; //np. [Female, Male, Unspecified]
-//       var selectedIndex = values.indexOf(registry.getValue("$variableName-edit"));
-//       List selectableValues = registry.getValue("selectable${toBeginningOfSentenceCase(variableName)}");
-//       registry.setValue("picked${toBeginningOfSentenceCase(variableName)}", selectableValues[selectedIndex]);
-//     }
-//   });
-//   Validator.registerCustomValidatorBuilder(
-//     RegexValidator.type,
-//     RegexValidator.fromDynamic,
-//   );
-//   registry.registerCustomBuilder(
-//     CustomSlider.type,
-//     const JsonWidgetBuilderContainer(
-//       builder: CustomSlider.fromDynamic,
-//     ),
-//   );
-//   //return(WidgetData(registry: registry, jsonData: a));
-// }
+Future<WidgetData> initialSteps() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  var registry = JsonWidgetRegistry();
+  var navigatorKey = GlobalKey<NavigatorState>();
+  registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
+  registry.registerFunction('returnLabel', ({args, required registry}) {
+    Map<String, dynamic> registryValues = registry.values;
+    for(String key in registryValues.keys){
+      if(key.startsWith("edit")){
+        print(key);
+      }
+    }
+    return registry.getValue("${args![0]}-${args[1]}");
+  } );
+  registry.registerFunction('returnLanguages', ({args, required registry}) {
+    return registry.getValue("languages");
+  } );
+  registry.registerFunctions({
+    show_date_picker_fun.key: show_date_picker_fun.body,
+    show_time_picker_fun.key: show_time_picker_fun.body,
+    show_file_picker_fun.key: show_file_picker_fun.body,
+    'validateForm': ({args, required registry}) => () {
+      //print(registry.values);
+      final BuildContext context = registry.getValue(args![0]);
+      Map<String, dynamic> values = {};
+      Map<String, dynamic> registryValues = registry.values;
+      for(String key in registryValues.keys){
+        //print(key);
+        if(key.startsWith("edit")){
+          values[key] = registryValues[key];
+        }
+      }
+      registry.setValue("obtainedValues", values);
+      obtainedValues = values;
+      print("-----------------------------OBTAINED--------------------------------");
+      print(registry.getValue("obtainedValues"));
+      final valid = Form.of(context).validate();
+      registry.setValue('form_validation', valid);
+      if(valid){
+        //registry.navigatorKey?.currentState!.push(MaterialPageRoute(builder: (context) => MyFormRenderPage(jsonData: {}, registry: registry,)));
+        //Navigator.pushNamed(navigatorKey.currentContext!, '/second');
+      }
+    },
+      'returnValues': ({args, required registry}) {
+        Map<String, dynamic> values = {};
+        Map<String, dynamic> registryValues = registry.values;
+        for(String key in registryValues.keys){
+          print(key);
+          if(key.startsWith("edit")){
+            values[registryValues[key]] = registryValues[key];
+          }
+        }
+        registry.setValue("obtainedValues", values);
+        print(registry.getValue("obtainedValues"));
+      }
+  });
+  registry.registerFunction('nooped', ({args, required registry}) {
+    print(registry.getValue("language"));
+  } );
+  // registry.registerFunction('returnValues', ({args, required registry}) {
+  //   Map<String, dynamic> values = {};
+  //   Map<String, dynamic> registryValues = registry.values;
+  //   for(String key in registryValues.keys){
+  //     print(key);
+  //     if(key.startsWith("edit")){
+  //       values[registryValues[key]] = registryValues[key];
+  //     }
+  //   }
+  //   registry.setValue("obtainedValues", values);
+  //   print(registry.getValue("obtainedValues"));
+  // } );
+  return(WidgetData(registry: registry, jsonData: {}));
+}
+
+Map<String, dynamic> returnObtainedValues(){
+  return obtainedValues;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class MyFormRenderPage extends StatefulWidget {
+  final Map<String, dynamic> jsonData;
+  final JsonWidgetRegistry registry;
+  const MyFormRenderPage({required this.jsonData, required this.registry, Key? key,}) : super(key: key);
+
+  @override
+  State<MyFormRenderPage> createState() => _MyFormRenderPageState();
+}
+
+class _MyFormRenderPageState extends State<MyFormRenderPage> {
+  late var _data;
+  late var _registry;
+
+  @override
+  void initState() {
+    super.initState();
+    _registry = widget.registry;
+    _data = JsonWidgetData.fromDynamic(widget.jsonData, registry: _registry);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _registry.setValue('myContext', context);
+    print(_registry.getValue('myContext'));
+    print(_registry.getValue('editAssigner'));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("My App"),
+      ),
+      body: Center(
+        child: CinemaWidget(registry: _registry, jsonData: widget.jsonData,),
+      ),
+    );
+  }
+}
+
+class CinemaWidget extends StatefulWidget {
+  final Map<String, dynamic> jsonData;
+  final JsonWidgetRegistry registry;
+  const CinemaWidget({required this.jsonData, required this.registry, Key? key,}) : super(key: key);
+
+  @override
+  State<CinemaWidget> createState() => _CinemaWidgetState();
+}
+
+class _CinemaWidgetState extends State<CinemaWidget> {
+  late var _data;
+  late var _registry;
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.jsonData);
+    _registry = widget.registry;
+    _data = JsonWidgetData.fromDynamic(widget.jsonData, registry: _registry);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var widget = JsonWidgetData.fromDynamic(_data, registry: _registry);
+    return widget!.build(context: context);
+  }
+}
