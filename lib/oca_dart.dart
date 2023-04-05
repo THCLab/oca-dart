@@ -26,6 +26,11 @@ class OcaDartPlugin {
     return bytes;
   }
 
+  static Future<Uint8List> getJsonFromHttp(String url) async{
+    final bytes = await f.getZipFromHttp(url);
+    return bytes;
+  }
+
   static Future<WidgetData> performInitialSteps() async{
     final widgetData = f.initialSteps();
     return widgetData;

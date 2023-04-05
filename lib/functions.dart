@@ -43,6 +43,22 @@ Future<Uint8List> getZipFromHttp (String digest) async{
 
 }
 
+Future<Uint8List> getJsonFromHttp (String url) async{
+  Map<String,String> headers = {
+    'Content-type' : 'application/json',
+    'Accept': 'application/json',
+  };
+  final response = await http.get(Uri.parse(url), headers: headers);
+  print(response.statusCode);
+  print(response.bodyBytes.length);
+  if(response.statusCode == 200){
+    return response.bodyBytes;
+  }else{
+    throw ServiceUnreachableException("Couldn't download OCA zip file. Check your digest or internet connection.");
+  }
+
+}
+
 Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
