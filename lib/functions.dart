@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,9 @@ import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
 import 'my_custom_validator.dart';
 
 Map<String, dynamic> obtainedValues = {};
+StreamController<bool> controller = StreamController<bool>();
+Stream stream = controller.stream;
+
 
 Future<Map<dynamic, dynamic>> getMapData(String path) async{
   final String mapString = await rootBundle.loadString(path);
@@ -239,6 +243,7 @@ Future<WidgetData> initialSteps() async{
       final valid = Form.of(context).validate();
       registry.setValue('form_validation', valid);
       if(valid){
+        controller.add(valid);
         //registry.navigatorKey?.currentState!.push(MaterialPageRoute(builder: (context) => MyFormRenderPage(jsonData: {}, registry: registry,)));
         //Navigator.pushNamed(navigatorKey.currentContext!, '/second');
       }
@@ -270,4 +275,8 @@ Map<String, dynamic> returnObtainedValues(){
     }
   }
   return obtainedValues;
+}
+
+Stream returnValidationStream(){
+  return stream;
 }

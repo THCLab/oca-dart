@@ -63,6 +63,10 @@ class OcaDartPlugin {
     return f.getWidgetFromJSON(data, context);
   }
 
+  static Stream returnValidationStream(){
+    return f.returnValidationStream();
+  }
+
 
 
 }
