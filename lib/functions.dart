@@ -64,6 +64,7 @@ Future<Uint8List> getJsonFromHttp (String url) async{
 }
 
 Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
+  registry.setValue("schema", map["said"]);
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
   //print(jsonMap['elements'][0]['children'][0]);
@@ -283,4 +284,8 @@ Map<String, dynamic> returnObtainedValues(){
 
 Stream returnValidationStream(){
   return stream;
+}
+
+String returnSchemaId(WidgetData widgetData){
+  return widgetData.registry.getValue("schema");
 }

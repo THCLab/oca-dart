@@ -67,6 +67,10 @@ class OcaDartPlugin {
     return f.returnValidationStream();
   }
 
+  static String returnSchemaId(WidgetData widgetData){
+    return f.returnSchemaId(widgetData);
+  }
+
 
 
 }

@@ -45,7 +45,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.widgetData.registry.values);
+    //print(widget.widgetData.registry.values);
+    print(widget.widgetData.jsonData["elements"][0]);
     var w = JsonWidgetData.fromDynamic(widget.widgetData.jsonData["elements"][0], registry: widget.widgetData.registry);
     print(w);
     return MaterialApp(
