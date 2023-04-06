@@ -273,6 +273,10 @@ Map<String, dynamic> returnObtainedValues(){
     if(key.contains('.error')){
       obtainedValues.remove(key);
     }
+    key = key.substring(4, key.length);
+    var key1 = key.substring(0,1).toLowerCase();
+    var key2 = key.substring(1,key.length);
+    key = key1 + key2;
   }
   return obtainedValues;
 }
