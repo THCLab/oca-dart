@@ -75,7 +75,7 @@ class OcaDartPlugin {
     return f.getSubmittedWidgetFromJSON(map, context);
   }
 
-  static Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, String> values){
+  static Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dynamic> values){
     return f.renderFilledForm(map, values);
   }
 

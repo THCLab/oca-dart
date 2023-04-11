@@ -98,7 +98,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   return jsonMap;
 }
 
-Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, String> values){
+Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dynamic> values){
   print(values);
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
