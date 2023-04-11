@@ -98,7 +98,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   return jsonMap;
 }
 
-Future<Map<String, dynamic>> renderFilledForm(Map<String, dynamic> map, Map<String, String> values) async {
+Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, String> values){
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
   WidgetsFlutterBinding.ensureInitialized();
@@ -115,7 +115,8 @@ Future<Map<String, dynamic>> renderFilledForm(Map<String, dynamic> map, Map<Stri
   }
 
   jsonOverlay = jsonEncode(jsonMap);
-  return jsonMap;
+  var widgetMap = {"registry":renderRegistry, "map":jsonMap};
+  return widgetMap;
 }
 
 String getSubmittedFormField(String attributeName, JsonWidgetRegistry registry, String value){
@@ -230,6 +231,15 @@ Widget getWidgetFromJSON (WidgetData data, BuildContext context){
   var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
   return widget!.build(context: context);
 }
+
+
+Widget getSubmittedWidgetFromJSON (Map<String, dynamic> map, Map<String, String> values, BuildContext context) {
+  var widgetMap = renderFilledForm(map, values);
+  var widget = JsonWidgetData.fromDynamic(widgetMap["map"].jsonData["elements"][0], registry: widgetMap["registry"]);
+  return widget!.build(context: context);
+}
+
+
 
 Future<WidgetData> initialSteps() async{
   WidgetsFlutterBinding.ensureInitialized();

@@ -71,6 +71,10 @@ class OcaDartPlugin {
     return f.returnSchemaId(widgetData);
   }
 
+  static Widget getSubmittedWidgetFromJSON (Map<String, dynamic> map, Map<String, String> values, BuildContext context) {
+    return f.getSubmittedWidgetFromJSON(map, values, context);
+  }
+
 
 
 }
