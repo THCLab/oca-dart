@@ -104,6 +104,14 @@ Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dyna
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
   WidgetsFlutterBinding.ensureInitialized();
   var renderRegistry = JsonWidgetRegistry();
+  renderRegistry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
+  renderRegistry.registerFunction('returnLabel', ({args, required registry}) {
+    Map<String, dynamic> registryValues = registry.values;
+    return registry.getValue("${args![0]}-${args[1]}");
+  } );
+  renderRegistry.registerFunction('returnLanguages', ({args, required registry}) {
+    return registry.getValue("languages");
+  } );
   List<dynamic> labelOverlay = map["overlays"]["label"];
   List<dynamic> informationOverlay = map["overlays"]["information"];
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
