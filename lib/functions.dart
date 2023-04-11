@@ -52,7 +52,7 @@ Future<Uint8List> getJsonFromHttp (String url) async{
     'Content-type' : 'application/json',
     'Accept': 'application/json',
   };
-  final response = await http.get(Uri.parse(url), headers: headers);
+  final response = await http.get(Uri.parse("https://repository.oca.argo.colossi.network/api/v0.1/schemas/${url}"), headers: headers);
   print(response.statusCode);
   print(response.bodyBytes.length);
   if(response.statusCode == 200){
