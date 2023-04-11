@@ -99,6 +99,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
 }
 
 Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, String> values){
+  print(values);
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,12 +111,14 @@ Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, Stri
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
+    print(values["edit${toBeginningOfSentenceCase(attribute)}"]!);
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values["edit${toBeginningOfSentenceCase(attribute)}"]!));
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
 
   jsonOverlay = jsonEncode(jsonMap);
   var widgetMap = {"registry":renderRegistry, "map":jsonMap};
+  print(widgetMap);
   return widgetMap;
 }
 
