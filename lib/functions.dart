@@ -98,6 +98,32 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   return jsonMap;
 }
 
+Future<Map<String, dynamic>> renderFilledForm(Map<String, dynamic> map, Map<String, String> values) async {
+  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
+  Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
+  WidgetsFlutterBinding.ensureInitialized();
+  var renderRegistry = JsonWidgetRegistry();
+  List<dynamic> labelOverlay = map["overlays"]["label"];
+  List<dynamic> informationOverlay = map["overlays"]["information"];
+  Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
+  jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], renderRegistry));
+  for(String attribute in map["capture_base"]["attributes"].keys){
+    parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
+    parseInformationOverlay(informationOverlay, renderRegistry, attribute);
+    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values["edit${toBeginningOfSentenceCase(attribute)}"]!));
+    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
+  }
+
+  jsonOverlay = jsonEncode(jsonMap);
+  return jsonMap;
+}
+
+String getSubmittedFormField(String attributeName, JsonWidgetRegistry registry, String value){
+  String textFormFieldJson = '';
+  textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text","args": {"text":"$value"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  return textFormFieldJson;
+}
+
 String getFormField(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textFormFieldJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
