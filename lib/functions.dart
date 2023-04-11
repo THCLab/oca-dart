@@ -238,7 +238,7 @@ Widget getWidgetFromJSON (WidgetData data, BuildContext context){
 
 Widget getSubmittedWidgetFromJSON (Map<String, dynamic> widgetMap, BuildContext context) {
   //var widgetMap = renderFilledForm(map, values);
-  var widget = JsonWidgetData.fromDynamic(widgetMap["map"].jsonData["elements"][0], registry: widgetMap["registry"]);
+  var widget = JsonWidgetData.fromDynamic(widgetMap["map"]["elements"][0], registry: widgetMap["registry"]);
   return widget!.build(context: context);
 }
 
