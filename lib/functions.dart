@@ -279,7 +279,7 @@ Future<WidgetData> initialSteps() async{
       Map<String, dynamic> registryValues = registry.values;
       for(String key in registryValues.keys){
         //print(key);
-        if(key.startsWith("edit")){
+        if(key.startsWith("edit") && !key.endsWith(".error")){
           values[key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length)] = registryValues[key];
         }
       }
