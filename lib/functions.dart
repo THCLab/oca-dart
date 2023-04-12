@@ -274,14 +274,13 @@ Future<WidgetData> initialSteps() async{
     show_time_picker_fun.key: show_time_picker_fun.body,
     show_file_picker_fun.key: show_file_picker_fun.body,
     'validateForm': ({args, required registry}) => () {
-      //print(registry.values);
       final BuildContext context = registry.getValue(args![0]);
       Map<String, dynamic> values = {};
       Map<String, dynamic> registryValues = registry.values;
       for(String key in registryValues.keys){
         //print(key);
         if(key.startsWith("edit")){
-          values[key] = registryValues[key];
+          values[key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length)] = registryValues[key];
         }
       }
       registry.setValue("obtainedValues", values);
@@ -292,8 +291,6 @@ Future<WidgetData> initialSteps() async{
       registry.setValue('form_validation', valid);
       if(valid){
         controller.add(valid);
-        //registry.navigatorKey?.currentState!.push(MaterialPageRoute(builder: (context) => MyFormRenderPage(jsonData: {}, registry: registry,)));
-        //Navigator.pushNamed(navigatorKey.currentContext!, '/second');
       }
     },
       'returnValues': ({args, required registry}) {
