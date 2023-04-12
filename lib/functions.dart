@@ -58,7 +58,7 @@ Future<Uint8List> getJsonFromHttp (String url) async{
   if(response.statusCode == 200){
     return response.bodyBytes;
   }else{
-    throw ServiceUnreachableException("Couldn't download OCA zip file. Check your digest or internet connection.");
+    throw ServiceUnreachableException("Couldn't download OCA json file. Check your digest or internet connection.");
   }
 
 }
