@@ -169,9 +169,9 @@ String getNumericFormField(String attributeName, JsonWidgetRegistry registry, Ma
 String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textDatePickerJson='';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
-    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"validators": [{"type": "required"}],"initialValue": "\${pickedDate}","decoration" : {"readOnly" : "true","suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"validators": [{"type": "required"}],"readOnly" : "true","initialValue": "\${pickedDate}","decoration" : {"suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
   }else{
-    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"initialValue": "\${pickedDate}","decoration" : {"readOnly" : "true","suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+    textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"initialValue": "\${pickedDate}","readOnly" : "true","decoration" : {"suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
   }
   return textDatePickerJson;
 }
@@ -277,10 +277,21 @@ Future<WidgetData> initialSteps() async{
       final BuildContext context = registry.getValue(args![0]);
       Map<String, dynamic> values = {};
       Map<String, dynamic> registryValues = registry.values;
+      Map<String, dynamic> selectableValues = {};
+      Map<String, dynamic> dropdownValues = {};
+      registryValues.keys.forEach((element) {
+        if(element.startsWith('selectable-')){
+          selectableValues[element.substring(element.indexOf('selectable-')+ 'selectable-'.length, element.length)] = registryValues[element];
+        }else if(element.startsWith('dropdown-')){
+          dropdownValues[element] = registryValues[element];
+        }
+      });
+      print(selectableValues);
+      print(dropdownValues);
       for(String key in registryValues.keys){
-        //print(key);
         if(key.startsWith("edit") && !key.endsWith(".error")){
-          values[key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length)] = registryValues[key];
+          String attributeName = key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length);
+          values[attributeName] = registryValues[key];
         }
       }
       registry.setValue("obtainedValues", values);
