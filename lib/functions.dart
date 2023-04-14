@@ -119,8 +119,13 @@ Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dyna
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
-    print(values["edit${toBeginningOfSentenceCase(attribute)}"]!);
-    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values["edit${toBeginningOfSentenceCase(attribute)}"]!));
+    if(map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
+      String codeValue = values[attribute];
+      String entryValue = map["overlays"]["entry"][0]["attribute_entries"]["attribute"][codeValue];
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue));
+    }else{
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!));
+    }
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
 
