@@ -121,7 +121,7 @@ Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dyna
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
     if(map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
       String codeValue = values[attribute];
-      String entryValue = map["overlays"]["entry"][0]["attribute_entries"]["attribute"][codeValue];
+      String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue));
     }else{
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!));
@@ -316,19 +316,7 @@ Future<WidgetData> initialSteps() async{
       if(valid){
         controller.add(valid);
       }
-    },
-      'returnValues': ({args, required registry}) {
-        Map<String, dynamic> values = {};
-        Map<String, dynamic> registryValues = registry.values;
-        for(String key in registryValues.keys){
-          print(key);
-          if(key.startsWith("edit")){
-            values[registryValues[key]] = registryValues[key];
-          }
-        }
-        registry.setValue("obtainedValues", values);
-        print(registry.getValue("obtainedValues"));
-      }
+    }
   });
   Validator.registerCustomValidatorBuilder(
     MyCustomValidator.type,
