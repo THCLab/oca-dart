@@ -286,12 +286,20 @@ Future<WidgetData> initialSteps() async{
           dropdownValues[element] = registryValues[element];
         }
       });
-      print(selectableValues);
-      print(dropdownValues);
       for(String key in registryValues.keys){
         if(key.startsWith("edit") && !key.endsWith(".error")){
           String attributeName = key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length);
-          values[attributeName] = registryValues[key];
+          if(selectableValues.keys.contains(attributeName)){
+            String currentValue = registryValues[key];
+            for(String mapKey in dropdownValues.keys){
+              if(dropdownValues[mapKey].contains(currentValue)){
+                int index = dropdownValues[mapKey].indexOf(currentValue);
+                values[attributeName] = selectableValues[attributeName][index];
+              }
+            }
+          }else{
+            values[attributeName] = registryValues[key];
+          }
         }
       }
       registry.setValue("obtainedValues", values);
