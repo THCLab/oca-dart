@@ -14,7 +14,7 @@ import 'package:oca_dart/widget_data.dart';
 
 void main() async{
   WidgetData firstWidgetData = await OcaDartPlugin.performInitialSteps();
-  final OcaBundle bundle = await OcaDartPlugin.loadOca(json: await rootBundle.loadString('assets/rightjson.json'));
+  final OcaBundle bundle = await OcaDartPlugin.loadOca(json: await rootBundle.loadString('assets/secondrightjson.json'));
   final String ocaBundle = await bundle.toJson();
   final ocaMap = jsonDecode(ocaBundle);
 

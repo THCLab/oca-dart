@@ -70,23 +70,35 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   //print(jsonMap['elements'][0]['children'][0]);
   //print(map["capture_base"]["attributes"]);
   List<dynamic> labelOverlay = map["overlays"]["label"];
-  List<dynamic> entryOverlay = map["overlays"]["entry"];
+  bool containsEntryOverlay = false;
+  List<dynamic> entryOverlay = [];
+  Map<String, dynamic> entryCodeOverlay = {};
+  if(map["overlays"]["entry"] != null){
+    entryOverlay = map["overlays"]["entry"];
+    containsEntryOverlay = true;
+    entryCodeOverlay = map["overlays"]["entry_code"];
+  }
   List<dynamic> informationOverlay = map["overlays"]["information"];
-  Map<String, dynamic> entryCodeOverlay = map["overlays"]["entry_code"];
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], registry));
-  parseEntryCodeOverlay(entryCodeOverlay, registry);
+  if(containsEntryOverlay){
+    parseEntryCodeOverlay(entryCodeOverlay, registry);
+  }
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, registry, attribute);
     //print(registry.values);
-    if(map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
+    if(containsEntryOverlay){
       parseEntryOverlay(entryOverlay, registry, attribute);
+    }
+    if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
     }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
     }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDatePicker(attribute, registry, conformanceOverlay));
+    }else if(map["capture_base"]["attributes"][attribute] == "Boolean"){
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getBool(attribute, registry, conformanceOverlay));
     }
     else{
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
@@ -115,11 +127,15 @@ Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dyna
   List<dynamic> labelOverlay = map["overlays"]["label"];
   List<dynamic> informationOverlay = map["overlays"]["information"];
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
+  bool containsEntryOverlay = false;
+  if(map["overlays"]["entry"] != null){
+    containsEntryOverlay = true;
+  }
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], renderRegistry));
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
-    if(map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
+    if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
       String codeValue = values[attribute];
       String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue));
@@ -179,6 +195,17 @@ String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<Stri
     textDatePickerJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"save_context", "args":{"key":"${toBeginningOfSentenceCase(attributeName)}Context"}, "children":[{"type": "text_form_field","args": {"initialValue": "\${pickedDate}","readOnly" : "true","decoration" : {"suffixIcon": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 984763,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${showDatePicker(\'${toBeginningOfSentenceCase(attributeName)}Context\', \'edit${toBeginningOfSentenceCase(attributeName)}\', \'YYYY-MM-DD\')}"}}}},"id": "edit${toBeginningOfSentenceCase(attributeName)}"}]},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
   }
   return textDatePickerJson;
+}
+
+String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
+  String textBooleanJson = '';
+  if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
+    textBooleanJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}], "value":"false"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }else{
+    textBooleanJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"value":"false"}},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }
+  return textBooleanJson;
+
 }
 
 String getSubmitButton(){
@@ -282,6 +309,7 @@ Future<WidgetData> initialSteps() async{
       final BuildContext context = registry.getValue(args![0]);
       Map<String, dynamic> values = {};
       Map<String, dynamic> registryValues = registry.values;
+      print(registryValues);
       Map<String, dynamic> selectableValues = {};
       Map<String, dynamic> dropdownValues = {};
       registryValues.keys.forEach((element) {

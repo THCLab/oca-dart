@@ -1,0 +1,104 @@
+{
+  "version": "OCAB10000023_",
+  "said": "E1miau2cEC444z2P4xUgt6YtPo4xjx-w6pGvyHmd32kc",
+  "capture_base": {
+    "said": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+    "type": "spec/capture_base/1.0",
+    "classification": "",
+    "attributes": {
+      "assigner": "Text",
+      "isReal": "Boolean"
+    },
+    "flagged_attributes": [
+      "assigner"
+    ]
+  },
+  "overlays": {
+    "character_encoding": {
+      "said": "EiopJFYhcitXAVvb3bR0OetaplpwK6m6xUS60ehBjKdI",
+      "type": "spec/overlays/character_encoding/1.0",
+      "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+      "attribute_character_encoding": {
+        "assigner": "utf-8",
+        "isReal": "utf-8"
+      }
+    },
+    "meta": [
+      {
+        "said": "EJvDQt2cwWa4sxAAZcB0MkfGhipertEmoFMapu5xbkoQ",
+        "language": "eng",
+        "type": "spec/overlays/meta/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "description": "Simple form made for boolean testing",
+        "name": "Bool test",
+        "resource": "urn:oid:2.16.840.1.113883"
+      },
+      {
+        "said": "EVvL52IU7AFKKLz6H88dEw0zB0tc14XguvU06Pgbcx9Y",
+        "language": "pl",
+        "type": "spec/overlays/meta/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "description": "Prosty form do testowania booleana",
+        "name": "Boolean test",
+        "resource": "urn:hl7-org:fhir:r4"
+      }
+    ],
+    "label": [
+      {
+        "said": "EYr1KjYkw4H4YqfTNZPp3rnuG4c7kxjPeVz8RTlOKycA",
+        "language": "eng",
+        "type": "spec/overlays/label/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_labels": {
+          "assigner": "Name",
+          "isReal": "is real (true/false)"
+        },
+        "attribute_categories": [],
+        "category_labels": {}
+      },
+      {
+        "said": "ErX3gj19qWWgIJ4ojrSZGpl6VLQmBPHkr8bbn7vP2v-g",
+        "language": "pl",
+        "type": "spec/overlays/label/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_labels": {
+          "assigner": "Imię",
+          "isReal": "czy prawdziwy (tak/nie)"
+        },
+        "attribute_categories": [],
+        "category_labels": {}
+      }
+    ],
+    "information": [
+      {
+        "said": "EMeW9baC8B4Bc8RsI-BBxhwGmIBwt18pGVbQh2_5mwoM",
+        "language": "eng",
+        "type": "spec/overlays/information/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_information": {
+          "assigner": "A person who is writing this",
+          "isReal": "A value of reality"
+        }
+      },
+      {
+        "said": "EDI6AZQ6z6qZcANW9srH8cfrO9rBgL2l70PxJZD1kVmA",
+        "language": "pl",
+        "type": "spec/overlays/information/1.0",
+        "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+        "attribute_information": {
+          "assigner": "Osoba wystawiająca",
+          "isReal": "Wartość prawdziwości"
+        }
+      }
+    ],
+    "conformance": {
+      "said": "ENgTRuVSxQcHTQnCStOaUhaP1aVsm0tvruoEtrZ9dV84",
+      "type": "spec/overlays/conformance/1.0",
+      "capture_base": "Ehgg8Ok4gWCPf7kFdl7jKUhxnlfbKOvYF2RHt5JXWdzQ",
+      "attribute_conformance": {
+        "assigner": "O",
+        "isReal": "M"
+      }
+    }
+  }
+}
