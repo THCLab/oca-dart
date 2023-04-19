@@ -87,11 +87,8 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   for(String attribute in map["capture_base"]["attributes"].keys){
     parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, registry, attribute);
-    //print(registry.values);
-    if(containsEntryOverlay){
-      parseEntryOverlay(entryOverlay, registry, attribute);
-    }
     if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
+      parseEntryOverlay(entryOverlay, registry, attribute);
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
     }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
@@ -263,9 +260,10 @@ void parseEntryCodeOverlay(Map<String, dynamic> entryCodeOverlay, JsonWidgetRegi
 void parseEntryOverlay(List<dynamic> entryOverlay, JsonWidgetRegistry registry, String attributeName){
   for (Map<String, dynamic> overlay in entryOverlay){
     var language = overlay["language"];
-    List<dynamic> values = [];
-    values.addAll(overlay["attribute_entries"][attributeName].values);
-    registry.setValue("dropdown-$attributeName-$language", values);
+    List<dynamic> vals = [];
+    print(attributeName);
+    vals.addAll(overlay["attribute_entries"][attributeName].values);
+    registry.setValue("dropdown-$attributeName-$language", vals);
   }
 }
 
