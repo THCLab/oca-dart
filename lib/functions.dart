@@ -89,7 +89,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
     parseInformationOverlay(informationOverlay, registry, attribute);
     if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
       parseEntryOverlay(entryOverlay, registry, attribute);
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute]));
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute], conformanceOverlay));
     }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
     }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
@@ -169,8 +169,14 @@ String getSizedBox(){
   return textSizedBoxJson;
 }
 
-String getDropdownMenu(String attributeName, List<dynamic> attributeValues){
-  String textDropdownJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(425)}","height": "\${scaleSize(60)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {"value" : "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)[0]}","items": "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)}"}}]} ]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+String getDropdownMenu(String attributeName, List<dynamic> attributeValues, Map<String, dynamic> conformanceOverlay){
+  String textDropdownJson = '';
+  if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
+    textDropdownJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(425)}","height": "\${scaleSize(60)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {"validators": [{"type": "required"}], "items": "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)}"}}]} ]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+
+  }else{
+    textDropdownJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(425)}","height": "\${scaleSize(60)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {"items": "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)}"}}]} ]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(10)}","color": "#737170"}}}]}';
+  }
   return textDropdownJson;
 }
 
