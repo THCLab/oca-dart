@@ -13,50 +13,30 @@ import 'package:oca_dart/widget_data.dart';
 
 
 void main() async{
-  WidgetData firstWidgetData = await OcaDartPlugin.performInitialSteps();
-  final OcaBundle bundle = await OcaDartPlugin.loadOca(json: await rootBundle.loadString('assets/rightjson.json'));
-  final String ocaBundle = await bundle.toJson();
-  final ocaMap = jsonDecode(ocaBundle);
-
-  var jsonData = await OcaDartPlugin.getFormFromAttributes(ocaMap, firstWidgetData.registry);
-  WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
-  runApp(MyApp(widgetData: widgetData,bundle: bundle));
+  WidgetsFlutterBinding.ensureInitialized();
+  WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/rightjson.json'));
+  runApp(MyApp(widgetData: widgetData));
 }
 
 class MyApp extends StatefulWidget {
   final WidgetData widgetData;
-  //final JsonWidgetRegistry registry;
-  final OcaBundle bundle;
-  const MyApp({super.key, required this.widgetData, required this.bundle /*, required this.registry*/});
+  const MyApp({super.key, required this.widgetData, /*required this.bundle*/ /*, required this.registry*/});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  //late WidgetData widgetData;
-  String widgetJson = "";
-  Map<String, dynamic> jsonMap = {};
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    //print(widget.widgetData.registry.values);
-    print(widget.widgetData.jsonData["elements"][0]);
-    var w = JsonWidgetData.fromDynamic(widget.widgetData.jsonData["elements"][0], registry: widget.widgetData.registry);
-    print(w);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: w?.build(context: context),
-          //child: getWidgetFromJSON(widget.widgetData, context) ?? Container()
+          child: OcaDartPlugin.renderWidgetData(widget.widgetData, context)
         ),
       ),
     );

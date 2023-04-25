@@ -18,6 +18,7 @@ import 'custom_widgets/slider_builder.dart';
 import 'custom_widgets/time_picker.dart' as show_time_picker_fun;
 import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
 import 'my_custom_validator.dart';
+import 'oca_dart.dart';
 
 Map<String, dynamic> obtainedValues = {};
 StreamController<bool> controller = StreamController<bool>();
@@ -108,7 +109,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   return jsonMap;
 }
 
-Map<String, dynamic> renderFilledForm(Map<String, dynamic> map, Map<String, dynamic> values){
+Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic> values){
   print(values);
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
@@ -276,25 +277,42 @@ void parseEntryOverlay(List<dynamic> entryOverlay, JsonWidgetRegistry registry, 
 }
 
 
-Widget getWidgetFromJSON (WidgetData data, BuildContext context){
-  var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
-  return widget!.build(context: context);
-}
+// Widget getWidgetFromJSON (WidgetData data, BuildContext context){
+//   var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
+//   return widget!.build(context: context);
+// }
 
 
-Widget getSubmittedWidgetFromJSON (Map<String, dynamic> widgetMap, BuildContext context) {
-  //var widgetMap = renderFilledForm(map, values);
+Widget renderFilledForm (Map<String, dynamic> widgetMap, BuildContext context) {
   var widget = JsonWidgetData.fromDynamic(widgetMap["map"]["elements"][0], registry: widgetMap["registry"]);
   return widget!.build(context: context);
 }
 
+Widget? renderWidgetData (WidgetData widgetData, BuildContext context) {
+  var w = JsonWidgetData.fromDynamic(widgetData.jsonData["elements"][0], registry: widgetData.registry);
+  return w?.build(context: context);
+}
+
+Future<WidgetData> getWidgetData (String json) async{
+  WidgetData firstWidgetData = await initialSteps();
+  final OcaBundle bundle = await OcaDartPlugin.loadOca(json: json);
+  final String ocaBundle = await bundle.toJson();
+  final ocaMap = jsonDecode(ocaBundle);
+  var jsonData = await getFormFromAttributes(ocaMap, firstWidgetData.registry);
+  WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
+  return widgetData;
+}
 
 
+//Performs initial steps related to json_dynamic_widget mostly and returns new object
+//of WidgetData, containing json to render and registry
 Future<WidgetData> initialSteps() async{
-  WidgetsFlutterBinding.ensureInitialized();
   var registry = JsonWidgetRegistry();
   var navigatorKey = GlobalKey<NavigatorState>();
+
+  //registers the function to adjust widget and font size to the device size
   registry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
+  //registers the function to return the label in chosen language
   registry.registerFunction('returnLabel', ({args, required registry}) {
     Map<String, dynamic> registryValues = registry.values;
     for(String key in registryValues.keys){
@@ -304,9 +322,11 @@ Future<WidgetData> initialSteps() async{
     }
     return registry.getValue("${args![0]}-${args[1]}");
   } );
+  //registers the function to return the list of languages from the OCA
   registry.registerFunction('returnLanguages', ({args, required registry}) {
     return registry.getValue("languages");
   } );
+  //registers the functions to show pickers and validate form
   registry.registerFunctions({
     show_date_picker_fun.key: show_date_picker_fun.body,
     show_time_picker_fun.key: show_time_picker_fun.body,
