@@ -62,8 +62,7 @@ class OcaDartPlugin {
   }
 
   ///Returns a widget from provided `WidgetData` object. `getWidgetData` needs to be
-  ///called first in order to obtain the object. Call `build` on the result of this
-  ///function to build a widget containing form from the OCA.
+  ///called first in order to obtain the object. Builds a widget containing form from the OCA.
   static Widget? renderWidgetData(WidgetData widgetData, BuildContext context){
     return f.renderWidgetData(widgetData, context);
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:json_class/json_class.dart';
 import 'package:static_translations/static_translations.dart';
 
+///Class that implements a custom, regex validator
 class MyCustomValidator extends ValueValidator {
   static const type = 'regex';
   final String regex;

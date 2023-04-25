@@ -20,17 +20,20 @@ import 'custom_widgets/file_picker.dart' as show_file_picker_fun;
 import 'my_custom_validator.dart';
 import 'oca_dart.dart';
 
+//values obtained from the form
 Map<String, dynamic> obtainedValues = {};
+//stream controller and stream to listen to the form being submitted
 StreamController<bool> controller = StreamController<bool>();
 Stream stream = controller.stream;
 
-
+//Loads map from json under given path
 Future<Map<dynamic, dynamic>> getMapData(String path) async{
   final String mapString = await rootBundle.loadString(path);
   var mapData = await json.decode(mapString);
   return mapData;
 }
 
+//Allows to return bytes of zip from url with given digest
 Future<Uint8List> getZipFromHttp (String digest) async{
   Map<String,String> headers = {
     'Content-type' : 'application/zip',
@@ -38,8 +41,6 @@ Future<Uint8List> getZipFromHttp (String digest) async{
   };
   String url = "https://repository.oca.argo.colossi.network/api/v0.1/namespaces/b1/schemas/$digest/archive";
   final response = await http.get(Uri.parse(url), headers: headers);
-  print(response.statusCode);
-  print(response.bodyBytes.length);
   if(response.statusCode == 200){
     return response.bodyBytes;
   }else{
@@ -48,14 +49,15 @@ Future<Uint8List> getZipFromHttp (String digest) async{
 
 }
 
+//Allows to return bytes of json file from given url
 Future<Uint8List> getJsonFromHttp (String url) async{
   Map<String,String> headers = {
     'Content-type' : 'application/json',
     'Accept': 'application/json',
   };
   final response = await http.get(Uri.parse(url), headers: headers);
-  print(response.statusCode);
-  print(response.bodyBytes.length);
+  //print(response.statusCode);
+  //print(response.bodyBytes.length);
   if(response.statusCode == 200){
     return response.bodyBytes;
   }else{
@@ -64,34 +66,59 @@ Future<Uint8List> getJsonFromHttp (String url) async{
 
 }
 
+//Prepares the form widget basing on given oca map
 Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
+  //save the schema id in the widget registry
   registry.setValue("schema", map["said"]);
+
+  //prepare the template for the form to render
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
+
+  //decode the template to work with it as a json, not a string
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
-  //print(jsonMap['elements'][0]['children'][0]);
-  //print(map["capture_base"]["attributes"]);
+
+  //get the list of label overlays in all the supported languages
   List<dynamic> labelOverlay = map["overlays"]["label"];
+
+  //boolean value to hold whether the oca contains of an entry (code) overlay
   bool containsEntryOverlay = false;
   List<dynamic> entryOverlay = [];
   Map<String, dynamic> entryCodeOverlay = {};
+
+  //check if the oca contains entry (code) overlays, get them and set value to true
   if(map["overlays"]["entry"] != null){
     entryOverlay = map["overlays"]["entry"];
     containsEntryOverlay = true;
     entryCodeOverlay = map["overlays"]["entry_code"];
   }
+
+  //get the list of information overlays for all the supported languages
   List<dynamic> informationOverlay = map["overlays"]["information"];
+
+  //get the conformance overlay
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
+
+  //parse the meta overlay to get the form title and language dropdown
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], registry));
+
+  //add some space
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   if(containsEntryOverlay){
     parseEntryCodeOverlay(entryCodeOverlay, registry);
   }
+
+  //Loop for each of the attributes in capture base
   for(String attribute in map["capture_base"]["attributes"].keys){
+    //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
     parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, registry, attribute);
+
+    //if the oca supports entry overlay, get the dropdown menu for this attribute
     if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
       parseEntryOverlay(entryOverlay, registry, attribute);
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute], conformanceOverlay));
+
+      //check the type of the attribute field and add a proper widget to the json form template
     }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
     }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
@@ -102,19 +129,27 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
     else{
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
     }
+    //leave some space after the attribute
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
+  //following all the form fields, render a submit button
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmitButton());
   jsonOverlay = jsonEncode(jsonMap);
   return jsonMap;
 }
 
+//Prepares filled form based on given values and oca map
 Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic> values){
-  print(values);
+  //prepare the template for the form to render
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
+
+  //decode the template to work with it as a json, not a string
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
-  WidgetsFlutterBinding.ensureInitialized();
+
+  //create a render registry to be able to switch languages
   var renderRegistry = JsonWidgetRegistry();
+
+  //register all the necessary functions in the new registry
   renderRegistry.registerFunction('scaleSize', ({args, required registry}) => args![0].toDouble()/window.devicePixelRatio.toDouble());
   renderRegistry.registerFunction('returnLabel', ({args, required registry}) {
     Map<String, dynamic> registryValues = registry.values;
@@ -123,18 +158,35 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
   renderRegistry.registerFunction('returnLanguages', ({args, required registry}) {
     return registry.getValue("languages");
   } );
+
+  //get the list of label overlays in all the supported languages
   List<dynamic> labelOverlay = map["overlays"]["label"];
+
+  //get the list of information overlays for all the supported languages
   List<dynamic> informationOverlay = map["overlays"]["information"];
+
+  //get the conformance overlay
   Map<String, dynamic> conformanceOverlay = map["overlays"]["conformance"];
+
+  //check if the oca contains entry (code) overlays and set value to true
   bool containsEntryOverlay = false;
   if(map["overlays"]["entry"] != null){
     containsEntryOverlay = true;
   }
+
+  //parse the meta overlay to get the form title and language dropdown
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(parseMetaOverlay(map["overlays"]["meta"], renderRegistry));
+
+  //add some space
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
+
+  //Loop for each of the attributes in capture base
   for(String attribute in map["capture_base"]["attributes"].keys){
+    //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
+
+    //if the oca supports entry overlay, get the code value from value map and find proper entry value in the oca
     if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
       String codeValue = values[attribute];
       String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
@@ -147,16 +199,18 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
 
   jsonOverlay = jsonEncode(jsonMap);
   var widgetMap = {"registry":renderRegistry, "map":jsonMap};
-  print(widgetMap);
+  //print(widgetMap);
   return widgetMap;
 }
 
+//Returns a string of text field json containing given value
 String getSubmittedFormField(String attributeName, JsonWidgetRegistry registry, String value){
   String textFormFieldJson = '';
   textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text","args": {"text":"$value"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
   return textFormFieldJson;
 }
 
+//Returns a string of text form field, taking the conformance overlay into account
 String getFormField(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textFormFieldJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
@@ -167,22 +221,24 @@ String getFormField(String attributeName, JsonWidgetRegistry registry, Map<Strin
   return textFormFieldJson;
 }
 
+//Returns sized box, giving some space
 String getSizedBox(){
   String textSizedBoxJson = '{"type" : "sized_box","args" : {"height" : "\${scaleSize(40)}"}}';
   return textSizedBoxJson;
 }
 
+//Returns a string of dropdown menu, taking the conformance overlay into account
 String getDropdownMenu(String attributeName, List<dynamic> attributeValues, Map<String, dynamic> conformanceOverlay){
   String textDropdownJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
     textDropdownJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(725)}","height": "\${scaleSize(120)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {"validators": [{"type": "required"}], "isExpanded":"true", "items": "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)}"}}]} ]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
-
   }else{
     textDropdownJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type" : "container","args": {"width": "\${scaleSize(725)}","height": "\${scaleSize(120)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "edit${toBeginningOfSentenceCase(attributeName)}","args": {"isExpanded":"true", "items": "\${returnLabel(\'dropdown-$attributeName\', language ?? currentLanguage)}"}}]} ]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
   }
   return textDropdownJson;
 }
 
+//Returns a string of numeric text form field, taking the conformance overlay into account
 String getNumericFormField(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textFormFieldJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
@@ -193,6 +249,7 @@ String getNumericFormField(String attributeName, JsonWidgetRegistry registry, Ma
   return textFormFieldJson;
 }
 
+//Returns a string of date picker form field, taking the conformance overlay into account
 String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textDatePickerJson='';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
@@ -203,6 +260,7 @@ String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<Stri
   return textDatePickerJson;
 }
 
+//Returns a string of bool form field (toggle), taking the conformance overlay into account
 String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textBooleanJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
@@ -214,25 +272,30 @@ String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dy
 
 }
 
+//Returns the button that submits the form
 String getSubmitButton(){
   String textButtonJson = '{"type" : "row","args" : {"mainAxisAlignment" : "center"},"children" :[{"type":"save_context","args": {"key": "buttonContext"},"children": [{"type" : "set_value","args" : {"firstInfo" : "edit_message_1"},"children" : [{"type": "text_button","args": {"onPressed" : "\${validateForm(\'buttonContext\')}"},"child": {"type": "text","args": {"text": "SUBMIT"}}}]}]}]}';
   return textButtonJson;
 }
 
+//Parses the meta overlay to return the title of the form and languages dropdown
 String parseMetaOverlay(List<dynamic> metaOverlay, JsonWidgetRegistry registry){
   List<String> languages = [];
+  //for all the languages in meta overlay
   for (Map<String, dynamic> overlay in metaOverlay){
     var language = overlay["language"];
+    //save the title for this language in the registry
     registry.setValue("formTitle-$language", overlay["name"]);
     languages.add(overlay["language"]);
   }
+  //save the current language and all languages to the registry
   registry.setValue("currentLanguage", metaOverlay[0]['language']);
   registry.setValue("languages", languages);
-  //print(registry.values);
   String textFormTitleJson = '{"type" : "column","children" : [{"type" : "text","args": {"text" : "\${returnLabel(\'formTitle\', language ?? currentLanguage)}", "style": {"fontSize": "\${scaleSize(65)}","color": "#000000","fontWeight" : "bold"}}},{"type" : "container","args": {"width": "\${scaleSize(225)}","height": "\${scaleSize(120)}"},"children" : [{"type" : "set_value","children" : [{"type": "dropdown_button_form_field","id": "language","args": {"style": {"fontSize": "\${scaleSize(20)", "color":"#000000"},"value" : "\${returnLanguages()[0]}","items": "\${returnLanguages()}"}}]} ]}]}';
   return textFormTitleJson;
 }
 
+//Parses the label overlay to save labels in all languages for given attribute in the registry
 void parseLabelOverlay(List<dynamic> labelOverlay, JsonWidgetRegistry registry, String attributeName, Map<String, dynamic> conformanceOverlay){
   for (Map<String, dynamic> overlay in labelOverlay){
     var language = overlay["language"];
@@ -244,6 +307,7 @@ void parseLabelOverlay(List<dynamic> labelOverlay, JsonWidgetRegistry registry, 
   }
 }
 
+//Parses the information overlay to save the field descriptors in all languages for given attribute in the registry
 void parseInformationOverlay(List<dynamic> informationOverlay, JsonWidgetRegistry registry, String attributeName){
   for (Map<String, dynamic> overlay in informationOverlay){
     var language = overlay["language"];
@@ -251,48 +315,50 @@ void parseInformationOverlay(List<dynamic> informationOverlay, JsonWidgetRegistr
   }
 }
 
+//Parses the conformance overlay to check whether the given attribute is obligatory
 bool parseConformanceOverlay(Map<String, dynamic> conformanceOverlay, String attributeName){
-  for (String attribute in conformanceOverlay["attribute_conformance"].keys){
-    if(conformanceOverlay["attribute_conformance"][attributeName] == "O"){
-      return true;
-    }
+  if(conformanceOverlay["attribute_conformance"][attributeName] == "O"){
+    return true;
   }
   return false;
 }
 
+//Parses the entry code overlay to save all selectable values for each of the attributes
 void parseEntryCodeOverlay(Map<String, dynamic> entryCodeOverlay, JsonWidgetRegistry registry){
   for (String attribute in entryCodeOverlay["attribute_entry_codes"].keys){
     registry.setValue("selectable-$attribute", entryCodeOverlay["attribute_entry_codes"][attribute]);
   }
 }
 
+//Parses the entry overlay to save all the dropdown values for the given attribute
 void parseEntryOverlay(List<dynamic> entryOverlay, JsonWidgetRegistry registry, String attributeName){
   for (Map<String, dynamic> overlay in entryOverlay){
     var language = overlay["language"];
     List<dynamic> vals = [];
-    print(attributeName);
+    //print(attributeName);
     vals.addAll(overlay["attribute_entries"][attributeName].values);
     registry.setValue("dropdown-$attributeName-$language", vals);
   }
 }
-
 
 // Widget getWidgetFromJSON (WidgetData data, BuildContext context){
 //   var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
 //   return widget!.build(context: context);
 // }
 
-
+//Renders the submitted form basing on the given map of widgets
 Widget renderFilledForm (Map<String, dynamic> widgetMap, BuildContext context) {
   var widget = JsonWidgetData.fromDynamic(widgetMap["map"]["elements"][0], registry: widgetMap["registry"]);
   return widget!.build(context: context);
 }
 
+//Renders the form to fill basing on the given `WidgetData` object
 Widget? renderWidgetData (WidgetData widgetData, BuildContext context) {
   var w = JsonWidgetData.fromDynamic(widgetData.jsonData["elements"][0], registry: widgetData.registry);
   return w?.build(context: context);
 }
 
+//Gets the widget data of the form to render
 Future<WidgetData> getWidgetData (String json) async{
   WidgetData firstWidgetData = await initialSteps();
   final OcaBundle bundle = await OcaDartPlugin.loadOca(json: json);
@@ -302,7 +368,6 @@ Future<WidgetData> getWidgetData (String json) async{
   WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
   return widgetData;
 }
-
 
 //Performs initial steps related to json_dynamic_widget mostly and returns new object
 //of WidgetData, containing json to render and registry
@@ -372,6 +437,7 @@ Future<WidgetData> initialSteps() async{
       }
     }
   });
+  //registers regex validator
   Validator.registerCustomValidatorBuilder(
     MyCustomValidator.type,
     MyCustomValidator.fromDynamic,
@@ -379,14 +445,17 @@ Future<WidgetData> initialSteps() async{
   return(WidgetData(registry: registry, jsonData: {}));
 }
 
+//returns the values from the submitted form
 Map<String, dynamic> returnObtainedValues(){
   return obtainedValues;
 }
 
+//returns the stream to know whether the form has been submitted
 Stream returnValidationStream(){
   return stream;
 }
 
+//returns the schema id from the registry for acdc saving
 String returnSchemaId(WidgetData widgetData){
   return widgetData.registry.getValue("schema");
 }

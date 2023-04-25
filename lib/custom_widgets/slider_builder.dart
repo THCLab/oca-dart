@@ -5,6 +5,7 @@ import 'package:json_dynamic_widget/json_dynamic_widget.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:meta/meta.dart';
 
+///Class that builds a slider widget
 class CustomSlider extends JsonWidgetBuilder {
   CustomSlider({
     this.activeColor,
