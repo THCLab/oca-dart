@@ -87,7 +87,7 @@ class OcaDartPlugin {
 
   ///Returns a widget from provided Map object. `getFilledForm` needs to be
   ///called first in order to obtain the object. Builds a widget containing submitted form from the OCA.
-  static Widget renderFilldeForm (Map<String, dynamic> map, BuildContext context) {
+  static Widget renderFilledForm (Map<String, dynamic> map, BuildContext context) {
     return f.renderFilledForm(map, context);
   }
 
