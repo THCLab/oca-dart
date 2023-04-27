@@ -24,7 +24,7 @@ import 'oca_dart.dart';
 Map<String, dynamic> obtainedValues = {};
 //stream controller and stream to listen to the form being submitted
 StreamController<bool> controller = StreamController<bool>();
-Stream stream = controller.stream;
+Stream stream = controller.stream.asBroadcastStream();
 
 //Loads map from json under given path
 Future<Map<dynamic, dynamic>> getMapData(String path) async{
