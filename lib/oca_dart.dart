@@ -97,6 +97,10 @@ class OcaDartPlugin {
     return f.getFilledForm(map, values);
   }
 
+  static String returnMetaDescription(Map<String, dynamic> ocaSchema){
+    return f.returnMetaDescription(ocaSchema);
+  }
+
 
 
 

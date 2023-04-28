@@ -459,3 +459,7 @@ Stream returnValidationStream(){
 String returnSchemaId(WidgetData widgetData){
   return widgetData.registry.getValue("schema");
 }
+
+String returnMetaDescription(Map<String, dynamic> ocaSchema){
+  return ocaSchema["overlays"]["meta"][0]["description"];
+}
