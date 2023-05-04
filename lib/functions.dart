@@ -462,6 +462,7 @@ String returnSchemaId(WidgetData widgetData){
 }
 
 String returnMetaDescription(dynamic ocaSchema){
+  print(ocaSchema.runtimeType);
   if(ocaSchema.runtimeType == Map<String, dynamic>){
     return ocaSchema["overlays"]["meta"][0]["description"];
   }else if (ocaSchema.runtimeType == WidgetData){
