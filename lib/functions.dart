@@ -462,11 +462,10 @@ String returnSchemaId(WidgetData widgetData){
 }
 
 String returnMetaDescription(dynamic ocaSchema){
-  print(ocaSchema.runtimeType);
-  if(ocaSchema.runtimeType == Map<String, dynamic>){
-    return ocaSchema["overlays"]["meta"][0]["description"];
-  }else if (ocaSchema.runtimeType == WidgetData){
+  if(ocaSchema.runtimeType == WidgetData){
     return ocaSchema.registry.getValue("meta");
+  }else if(ocaSchema["overlays"]["meta"][0]["description"] != null){
+    return ocaSchema["overlays"]["meta"][0]["description"];
   }
   return "";
 
