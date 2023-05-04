@@ -281,6 +281,7 @@ String getSubmitButton(){
 //Parses the meta overlay to return the title of the form and languages dropdown
 String parseMetaOverlay(List<dynamic> metaOverlay, JsonWidgetRegistry registry){
   List<String> languages = [];
+  registry.setValue("meta", metaOverlay[0]["description"]);
   //for all the languages in meta overlay
   for (Map<String, dynamic> overlay in metaOverlay){
     var language = overlay["language"];
@@ -460,6 +461,12 @@ String returnSchemaId(WidgetData widgetData){
   return widgetData.registry.getValue("schema");
 }
 
-String returnMetaDescription(Map<String, dynamic> ocaSchema){
-  return ocaSchema["overlays"]["meta"][0]["description"];
+String returnMetaDescription(dynamic ocaSchema){
+  if(ocaSchema.runtimeType == Map<String, dynamic>){
+    return ocaSchema["overlays"]["meta"][0]["description"];
+  }else if (ocaSchema.runtimeType == WidgetData){
+    return ocaSchema.registry.getValue("meta");
+  }
+  return "";
+
 }
