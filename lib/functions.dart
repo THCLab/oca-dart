@@ -423,7 +423,7 @@ Future<WidgetData> initialSteps() async{
               }
             }
           }else{
-            values[attributeName] = registryValues[key];
+            values[attributeName] = registryValues[key].toString();
           }
         }
       }
