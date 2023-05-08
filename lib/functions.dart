@@ -72,7 +72,7 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   registry.setValue("schema", map["said"]);
 
   //prepare the template for the form to render
-  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form", "children":[{"type":"column", "children":[]}]}]}] }';
+  String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form","args":{"autovalidate":"true", "autovalidateMode":"onUserInteraction"}, "children":[{"type":"column", "children":[]}]}]}] }';
 
   //decode the template to work with it as a json, not a string
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
@@ -206,7 +206,7 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
 //Returns a string of text field json containing given value
 String getSubmittedFormField(String attributeName, JsonWidgetRegistry registry, String value){
   String textFormFieldJson = '';
-  textFormFieldJson = '{"type":"column", "children": [{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}},{"type": "text","args": {"text":"$value"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
+  textFormFieldJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type":"container", "args":{"decoration":{"border": {"type":"outline","width":2}}, "children":[{"type": "text","args": {"text":"$value"}}]}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   return textFormFieldJson;
 }
 
@@ -264,9 +264,9 @@ String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<Stri
 String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textBooleanJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
-    textBooleanJson = '{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}], "value":"false"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
+    textBooleanJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}], "value":"false"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   }else{
-    textBooleanJson = '{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"value":"false"}},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}';
+    textBooleanJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"value":"false"}},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   }
   return textBooleanJson;
 
@@ -274,7 +274,7 @@ String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dy
 
 //Returns the button that submits the form
 String getSubmitButton(){
-  String textButtonJson = '{"type" : "row","args" : {"mainAxisAlignment" : "center"},"children" :[{"type":"save_context","args": {"key": "buttonContext"},"children": [{"type" : "set_value","args" : {"firstInfo" : "edit_message_1"},"children" : [{"type": "text_button","args": {"onPressed" : "\${validateForm(\'buttonContext\')}"},"child": {"type": "text","args": {"text": "SUBMIT"}}}]}]}]}';
+  String textButtonJson = '{"type" : "row","args" : {"mainAxisAlignment" : "center"},"children" :[{"type":"save_context","args": {"key": "buttonContext"},"children": [{"type" : "set_value","args" : {"firstInfo" : "edit_message_1"},"children" : [{"type": "text_button","args": {"onPressed" : "\${validateForm(\'buttonContext\')}"},"child": {"type": "text","args": {"text": "ISSUE"}}}]}]}]}';
   return textButtonJson;
 }
 
