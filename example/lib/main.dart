@@ -15,7 +15,7 @@ import 'package:oca_dart/widget_data.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/rightjson.json'));
-  runApp(MyApp(widgetData: widgetData));
+  runApp(MaterialApp(home: MyApp(widgetData: widgetData)));
 }
 
 class MyApp extends StatefulWidget {
@@ -30,16 +30,57 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: OcaDartPlugin.renderWidgetData(widget.widgetData, context)
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: OcaDartPlugin.renderWidgetData(widget.widgetData, context)
+              ),
+              TextButton(
+                onPressed: () async{
+                  print(widget.widgetData.jsonData);
+                  var theMap = OcaDartPlugin.getFilledForm(jsonDecode(await rootBundle.loadString('assets/rightjson.json')), OcaDartPlugin.returnObtainedValues());
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SubmittedData(submittedForm: theMap)));
+                },
+                child: Text("render")
+              )
+            ],
+          ),
+        ),
+    );
+  }
+}
+
+class SubmittedData extends StatefulWidget {
+  final Map<String, dynamic> submittedForm;
+  const SubmittedData({Key? key, required this.submittedForm}) : super(key: key);
+
+  @override
+  State<SubmittedData> createState() => _SubmittedDataState();
+}
+
+class _SubmittedDataState extends State<SubmittedData> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Center(
+                child: OcaDartPlugin.renderFilledForm(widget.submittedForm, context)
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
 

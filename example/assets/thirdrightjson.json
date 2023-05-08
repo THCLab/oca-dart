@@ -1,0 +1,65 @@
+{
+  "version": "OCAB10000023_",
+  "said": "EPtdQc35vLxszRMw3-uyBg3JY0_7uQ0xqZlkCfD0VSB5",
+  "capture_base": {
+    "said": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+    "type": "spec/capture_base/1.0",
+    "classification": "",
+    "attributes": {
+      "passed": "Boolean"
+    },
+    "flagged_attributes": []
+  },
+  "overlays": {
+    "character_encoding": {
+      "said": "EIy52Bo67XuDiUPj7ZQZsSdmH9kqtDG9nIvhLYS94K8t",
+      "type": "spec/overlays/character_encoding/1.0",
+      "capture_base": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+      "attribute_character_encoding": {
+        "passed": "utf-8"
+      }
+    },
+    "meta": [
+      {
+        "said": "EP1N0MVzuxEsOx3qmdVrSdWg-umT4KJtRQypxeTzWOFu",
+        "language": "eng",
+        "type": "spec/overlays/meta/1.0",
+        "capture_base": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+        "description": "Entrance credential",
+        "name": "Entrance credential"
+      }
+    ],
+    "label": [
+      {
+        "said": "EMsx4O_bDCyLxoQLO811XCSu0ANJLLuHXmEhiqWr_b1Y",
+        "language": "eng",
+        "type": "spec/overlays/label/1.0",
+        "capture_base": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+        "attribute_labels": {
+          "passed": "Passed"
+        },
+        "attribute_categories": [],
+        "category_labels": {}
+      }
+    ],
+    "information": [
+      {
+        "said": "EOaRyZgU24Vu5EwdIX2hETs6nXmHWLb94sdTfr8yjKiK",
+        "language": "eng",
+        "type": "spec/overlays/information/1.0",
+        "capture_base": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+        "attribute_information": {
+          "passed": "Enables or disables passing"
+        }
+      }
+    ],
+    "conformance": {
+      "said": "EMwclFaxKY-VoD9wtqwlrCecTSRF3Oig4-uvsckM11r8",
+      "type": "spec/overlays/conformance/1.0",
+      "capture_base": "EIJGJmS_P9jwZDamB6cTG9MoXKRu21myjXsMi7GYddDy",
+      "attribute_conformance": {
+        "passed": "M"
+      }
+    }
+  }
+}
