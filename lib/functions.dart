@@ -190,9 +190,9 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
     if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
       String codeValue = values[attribute];
       String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue));
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
     }else{
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!));
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
     }
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
