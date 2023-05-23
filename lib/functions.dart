@@ -264,7 +264,8 @@ String getDatePicker(String attributeName, JsonWidgetRegistry registry, Map<Stri
 String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
   String textBooleanJson = '';
   if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
-    textBooleanJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}], "value":"false"}}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
+    registry.setValue("edit${toBeginningOfSentenceCase(attributeName)}", false);
+    textBooleanJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"set_value", "children":[{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"validators": [{"type": "required"}], "value":"false"}}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   }else{
     textBooleanJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"switch","id":"edit${toBeginningOfSentenceCase(attributeName)}","args":{"value":"false"}},{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   }
@@ -318,7 +319,7 @@ void parseInformationOverlay(List<dynamic> informationOverlay, JsonWidgetRegistr
 
 //Parses the conformance overlay to check whether the given attribute is obligatory
 bool parseConformanceOverlay(Map<String, dynamic> conformanceOverlay, String attributeName){
-  if(conformanceOverlay["attribute_conformance"][attributeName] == "O"){
+  if(conformanceOverlay["attribute_conformance"][attributeName] == "M"){
     return true;
   }
   return false;
