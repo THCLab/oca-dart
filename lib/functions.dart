@@ -304,6 +304,7 @@ String parseMetaOverlay(List<dynamic> metaOverlay, JsonWidgetRegistry registry){
 
 //Parses the label overlay to save labels in all languages for given attribute in the registry
 void parseLabelOverlay(List<dynamic> labelOverlay, JsonWidgetRegistry registry, String attributeName, Map<String, dynamic> conformanceOverlay){
+  print('weszło do label');
   for (Map<String, dynamic> overlay in labelOverlay){
     var language = overlay["language"];
     if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
