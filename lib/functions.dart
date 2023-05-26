@@ -193,6 +193,8 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
       String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
     }else{
+      print("czy tego szukamy???");
+      print(values[attribute]!);
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
     }
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
