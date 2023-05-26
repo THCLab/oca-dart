@@ -185,7 +185,9 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
     print(attribute);
     //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
+    print("----przeszło label----");
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
+    print("----przeszło information----");
 
     //if the oca supports entry overlay, get the code value from value map and find proper entry value in the oca
     if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
