@@ -145,7 +145,6 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
 
   //decode the template to work with it as a json, not a string
   Map<String, dynamic> jsonMap = json.decode(jsonOverlay);
-  print(jsonMap);
   //create a render registry to be able to switch languages
   var renderRegistry = JsonWidgetRegistry();
 
@@ -182,12 +181,9 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
 
   //Loop for each of the attributes in capture base
   for(String attribute in map["capture_base"]["attributes"].keys){
-    print(attribute);
     //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
     parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
-    print("----przeszło label----");
     parseInformationOverlay(informationOverlay, renderRegistry, attribute);
-    print("----przeszło information----");
 
     //if the oca supports entry overlay, get the code value from value map and find proper entry value in the oca
     if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
@@ -195,9 +191,6 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
       String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
     }else{
-      print("czy tego szukamy???");
-      print(values);
-      print(values[attribute]!);
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
     }
     jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
