@@ -67,9 +67,10 @@ Future<Uint8List> getJsonFromHttp (String url) async{
 }
 
 //Prepares the form widget basing on given oca map
-Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry) async{
+Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, JsonWidgetRegistry registry, String issuerId) async{
   //save the schema id in the widget registry
-  registry.setValue("schema", map["said"]);
+  registry.setValue("schema", map["d"]);
+  String schema = map["d"];
 
   //prepare the template for the form to render
   String jsonOverlay = '{ "elements": [{"type":"single_child_scroll_view", "children": [{"type":"form","args":{"autovalidate":"true", "autovalidateMode":"onUserInteraction"}, "children":[{"type":"column", "children":[]}]}]}] }';
@@ -110,27 +111,34 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   //Loop for each of the attributes in capture base
   for(String attribute in map["capture_base"]["attributes"].keys){
     //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
-    parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
-    parseInformationOverlay(informationOverlay, registry, attribute);
+    if(attribute != "d" && attribute != "i"){
+      parseLabelOverlay(labelOverlay, registry, attribute, conformanceOverlay);
+      parseInformationOverlay(informationOverlay, registry, attribute);
 
-    //if the oca supports entry overlay, get the dropdown menu for this attribute
-    if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
-      parseEntryOverlay(entryOverlay, registry, attribute);
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute], conformanceOverlay));
+      //if the oca supports entry overlay, get the dropdown menu for this attribute
+      if(containsEntryOverlay && map["overlays"]["entry_code"]["attribute_entry_codes"].keys.contains(attribute)){
+        parseEntryOverlay(entryOverlay, registry, attribute);
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDropdownMenu(attribute, map["overlays"]["entry_code"]["attribute_entry_codes"][attribute], conformanceOverlay));
 
-      //check the type of the attribute field and add a proper widget to the json form template
-    }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
-    }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDatePicker(attribute, registry, conformanceOverlay));
-    }else if(map["capture_base"]["attributes"][attribute] == "Boolean"){
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getBool(attribute, registry, conformanceOverlay));
+        //check the type of the attribute field and add a proper widget to the json form template
+      }else if(map["capture_base"]["attributes"][attribute] == "Numeric"){
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getNumericFormField(attribute, registry, conformanceOverlay));
+      }else if(map["capture_base"]["attributes"][attribute] == "DateTime"){
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDatePicker(attribute, registry, conformanceOverlay));
+      }else if(map["capture_base"]["attributes"][attribute] == "Boolean"){
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getBool(attribute, registry, conformanceOverlay));
+      }
+      else{
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
+      }
+      //leave some space after the attribute
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
+    }else if(attribute == "d"){
+      registry.setValue("editD", schema);
+    }else if(attribute =="i"){
+      registry.setValue("editI", issuerId);
     }
-    else{
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
-    }
-    //leave some space after the attribute
-    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
+
   }
   //following all the form fields, render a submit button
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmitButton());
@@ -181,19 +189,21 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
 
   //Loop for each of the attributes in capture base
   for(String attribute in map["capture_base"]["attributes"].keys){
-    //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
-    parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
-    parseInformationOverlay(informationOverlay, renderRegistry, attribute);
+    if(attribute != "d" && attribute != "i"){
+      //parse the label and information overlay for this attribute to get its labels and field descriptions in all supported languages
+      parseLabelOverlay(labelOverlay, renderRegistry, attribute, conformanceOverlay);
+      parseInformationOverlay(informationOverlay, renderRegistry, attribute);
 
-    //if the oca supports entry overlay, get the code value from value map and find proper entry value in the oca
-    if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
-      String codeValue = values[attribute];
-      String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
-    }else{
-      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
+      //if the oca supports entry overlay, get the code value from value map and find proper entry value in the oca
+      if(containsEntryOverlay && map["overlays"]["entry"][0]["attribute_entries"].keys.contains(attribute)){
+        String codeValue = values[attribute];
+        String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
+      }else{
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
+      }
+      jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
     }
-    jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   }
 
   jsonOverlay = jsonEncode(jsonMap);
@@ -361,12 +371,12 @@ Widget? renderWidgetData (WidgetData widgetData, BuildContext context) {
 }
 
 //Gets the widget data of the form to render
-Future<WidgetData> getWidgetData (String json) async{
+Future<WidgetData> getWidgetData (String json, String issuerId) async{
   WidgetData firstWidgetData = await initialSteps();
   final OcaBundle bundle = await OcaDartPlugin.loadOca(json: json);
   final String ocaBundle = await bundle.toJson();
   final ocaMap = jsonDecode(ocaBundle);
-  var jsonData = await getFormFromAttributes(ocaMap, firstWidgetData.registry);
+  var jsonData = await getFormFromAttributes(ocaMap, firstWidgetData.registry, issuerId);
   WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
   return widgetData;
 }

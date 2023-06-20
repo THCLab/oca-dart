@@ -14,7 +14,7 @@ import 'package:oca_dart/widget_data.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/thirdrightjson.json'));
+  WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/version03.json'), "Idabiugeaiuy8728637gea9aghewe");
   runApp(MaterialApp(home: MyApp(widgetData: widgetData)));
 }
 
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
               TextButton(
                 onPressed: () async{
                   print(widget.widgetData.jsonData);
-                  var theMap = OcaDartPlugin.getFilledForm(jsonDecode(await rootBundle.loadString('assets/thirdrightjson.json')), OcaDartPlugin.returnObtainedValues());
+                  var theMap = OcaDartPlugin.getFilledForm(jsonDecode(await rootBundle.loadString('assets/version03.json')), OcaDartPlugin.returnObtainedValues());
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SubmittedData(submittedForm: theMap)));
                 },
                 child: Text("render")

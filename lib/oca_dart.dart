@@ -57,8 +57,8 @@ class OcaDartPlugin {
   ///performing initial steps related to json_dynamic_widget, loading the OCA
   ///from json and preparing a form Widget by parsing overlays. Returns a `WidgetData` object,
   /// ready to be consumed by another function, `renderWidgetData`.
-  static Future<WidgetData> getWidgetData (String json) async{
-    return f.getWidgetData(json);
+  static Future<WidgetData> getWidgetData (String json, String issuerId) async{
+    return f.getWidgetData(json, issuerId);
   }
 
   ///Returns a widget from provided `WidgetData` object. `getWidgetData` needs to be
