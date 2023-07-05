@@ -83,14 +83,21 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
 
   //boolean value to hold whether the oca contains of an entry (code) overlay
   bool containsEntryOverlay = false;
+  bool containsCardinalityOverlay = false;
   List<dynamic> entryOverlay = [];
   Map<String, dynamic> entryCodeOverlay = {};
+  Map<String, dynamic> cardinalityOverlay = {};
 
   //check if the oca contains entry (code) overlays, get them and set value to true
   if(map["overlays"]["entry"] != null){
     entryOverlay = map["overlays"]["entry"];
     containsEntryOverlay = true;
     entryCodeOverlay = map["overlays"]["entry_code"];
+  }
+
+  if(map["overlays"]["cardinality"] != null){
+    containsCardinalityOverlay = true;
+    cardinalityOverlay = map["overlays"]["cardinality"];
   }
 
   //get the list of information overlays for all the supported languages
@@ -106,6 +113,10 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
   jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
   if(containsEntryOverlay){
     parseEntryCodeOverlay(entryCodeOverlay, registry);
+  }
+
+  if(containsCardinalityOverlay){
+    parseCardinalityOverlay(cardinalityOverlay, registry);
   }
 
   //Loop for each of the attributes in capture base
@@ -127,6 +138,8 @@ Future<Map<String, dynamic>> getFormFromAttributes (Map<String, dynamic> map, Js
         jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getDatePicker(attribute, registry, conformanceOverlay));
       }else if(map["capture_base"]["attributes"][attribute] == "Boolean"){
         jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getBool(attribute, registry, conformanceOverlay));
+      }else if(map["capture_base"]["attributes"][attribute] == "Array[Text]"){
+        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getArray(attribute, registry, conformanceOverlay));
       }
       else{
         jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getFormField(attribute, registry, conformanceOverlay));
@@ -200,7 +213,13 @@ Map<String, dynamic> getFilledForm(Map<String, dynamic> map, Map<String, dynamic
         String entryValue = map["overlays"]["entry"][0]["attribute_entries"][attribute][codeValue];
         jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, entryValue.toString()));
       }else{
-        jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
+        if(values[attribute] != null){
+          if(map["capture_base"]["attributes"][attribute] == "Array[Text]"){
+            jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedListView(attribute, renderRegistry, values[attribute]!.toString()));
+          }else{
+            jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSubmittedFormField(attribute, renderRegistry, values[attribute]!.toString()));
+          }
+        }
       }
       jsonMap['elements'][0]['children'][0]['children'][0]['children'].add(getSizedBox());
     }
@@ -217,6 +236,19 @@ String getSubmittedFormField(String attributeName, JsonWidgetRegistry registry, 
   String textFormFieldJson = '';
   textFormFieldJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type":"container", "args":{"width":"infinity","decoration":{"border": {"width":1,"color": "#737170"}, "borderRadius":"5"}, "padding": "\${scaleSize(50)}"}, "children":[{"type": "text","args": {"text":"$value", "style":{"fontSize": "\${scaleSize(48)}"}}}]}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
   return textFormFieldJson;
+}
+
+String getSubmittedListView(String attributeName, JsonWidgetRegistry registry, String value){
+  String textFormFieldJson = '';
+  String firstListViewJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]}]}]}';
+  List<String> valueList = value.substring(value.indexOf("[")+1, value.indexOf("]")).split(",");
+  Map<String, dynamic> jsonMap = json.decode(firstListViewJson);
+  for(String value in valueList){
+    jsonMap["children"][0]["children"].add('{"type":"row","children":[{"type": "icon","args": {"icon": {"codePoint": 57687,"fontFamily": "MaterialIcons"}}},{"type" : "text","args" : {"text" : "$value"}}]}');
+  }
+  jsonMap["children"][0]["children"].add('{"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}');
+  String jsonOverlay = jsonEncode(jsonMap);
+  return jsonOverlay;
 }
 
 //Returns a string of text form field, taking the conformance overlay into account
@@ -280,6 +312,21 @@ String getBool(String attributeName, JsonWidgetRegistry registry, Map<String, dy
   }
   return textBooleanJson;
 
+}
+
+String getArray(String attributeName, JsonWidgetRegistry registry, Map<String, dynamic> conformanceOverlay){
+  String textArrayJson = '';
+  int min = int.parse(registry.getValue("cardinality-$attributeName-min"));
+  int max = int.parse(registry.getValue("cardinality-$attributeName-max"));
+  List<Map<String, dynamic>> vms = [{ "vm_name": 123, "identifier": 456 }, { "vm_name": 227, "identifier": 432 }, { "vm_name": 324, "identifier": 675 }];
+  List<String> items = vms.map((e) => e["vm_name"].toString()).toList();
+  registry.setValue("array-$attributeName", items);
+  if(parseConformanceOverlay(conformanceOverlay, attributeName) == true){
+    textArrayJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type": "column","args": {"mainAxisAlignment" : "start"},"children": [{"type": "dynamic","id": "items-$attributeName","args": {"dynamic": {"builderType": "list_view","childTemplate": {"type": "set_value","args": {"remove{id}Element": {"type": "remove","builder": "items-$attributeName","target": {"id": "{id}"}}},"child": {"id": "{id}","type": "row","children": [{"type":"container","args": {"width": "\${scaleSize(800)}"},"children":[{"type":"set_value","children":[{"type":"dropdown_button_form_field","id":"edit${toBeginningOfSentenceCase(attributeName)}{id}","args":{"decoration":{"border":{"type":"outline","width":2}},"validators":[{"type":"required"}],"isExpanded":"true","items":"\${returnArrayList(\'$attributeName\')}"}}]}]},{"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 58646,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${removeDynamically(dynamic(\'remove{id}Element\'), $min, \'$attributeName\')}"}}],"args": {"mainAxisAlignment" : "spaceBetween"}}},"initState": [{"id": "1"}]},"shrinkWrap" : "true"}},{"type": "set_value","args": {"dynamicItemsAdd": {"type": "add","builder": "items-$attributeName","target": {"index": -1}}},"child": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 57415,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${addDynamically(dynamic(\'dynamicItemsAdd\'),$max, \'$attributeName\')}"}}}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
+  }else{
+    textArrayJson = '{"type":"padding","args":{"padding":"\${scaleSize(25)}"}, "children":[{"type":"column", "children": [{"type":"align", "args":{"alignment":"centerLeft"}, "children":[{"type": "text","args": {"text":"\${returnLabel(\'$attributeName\', language ?? currentLanguage)}"}}]},{"type": "column","args": {"mainAxisAlignment" : "start"},"children": [{"type": "dynamic","id": "items-$attributeName","args": {"dynamic": {"builderType": "list_view","childTemplate": {"type": "set_value","args": {"remove{id}Element": {"type": "remove","builder": "items-$attributeName","target": {"id": "{id}"}}},"child": {"id": "{id}","type": "row","children": [{"type":"container","args": {"width": "\${scaleSize(800)}"},"children":[{"type":"set_value","children":[{"type":"dropdown_button_form_field","id":"edit${toBeginningOfSentenceCase(attributeName)}{id}","args":{"decoration":{"border":{"type":"outline","width":2}},"validators":[{"type":"required"}],"isExpanded":"true","items":"\${returnArrayList(\'$attributeName\')}"}}]}]},{"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 58646,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${removeDynamically(dynamic(\'remove{id}Element\'), $min, \'$attributeName\')}"}}],"args": {"mainAxisAlignment" : "spaceBetween"}}}},"shrinkWrap" : "true"}},{"type": "set_value","args": {"dynamicItemsAdd": {"type": "add","builder": "items-$attributeName","target": {"index": -1}}},"child": {"type": "icon_button","args": {"icon": {"type": "icon","args": {"icon": {"codePoint": 57415,"fontFamily": "MaterialIcons","size": 50}}},"onPressed": "\${addDynamically(dynamic(\'dynamicItemsAdd\'),$max, \'$attributeName\')}"}}}]}, {"type": "text","args": {"text":"\${returnLabel(\'information-$attributeName\', language ?? currentLanguage)}","style": {"fontSize": "\${scaleSize(25)}","color": "#737170"}}}]}]}';
+  }
+  return textArrayJson;
 }
 
 //Returns the button that submits the form
@@ -353,6 +400,15 @@ void parseEntryOverlay(List<dynamic> entryOverlay, JsonWidgetRegistry registry, 
   }
 }
 
+void parseCardinalityOverlay(Map<String, dynamic> cardinalityOverlay, JsonWidgetRegistry registry){
+  for (String attribute in cardinalityOverlay["attribute_cardinality"].keys){
+    String minValue = cardinalityOverlay["attribute_cardinality"][attribute].toString().substring(0,1);
+    String maxValue = cardinalityOverlay["attribute_cardinality"][attribute].toString().substring(2,cardinalityOverlay["attribute_cardinality"][attribute].toString().length);
+    registry.setValue("cardinality-$attribute-min", minValue);
+    registry.setValue("cardinality-$attribute-max", maxValue);
+  }
+}
+
 // Widget getWidgetFromJSON (WidgetData data, BuildContext context){
 //   var widget = JsonWidgetData.fromDynamic(data.jsonData["elements"][0], registry: data.registry);
 //   return widget!.build(context: context);
@@ -399,6 +455,9 @@ Future<WidgetData> initialSteps() async{
     }
     return registry.getValue("${args![0]}-${args[1]}");
   } );
+  registry.registerFunction('returnArrayList', ({args, required registry}) {
+    return registry.getValue("array-${args![0]}");
+  });
   //registers the function to return the list of languages from the OCA
   registry.registerFunction('returnLanguages', ({args, required registry}) {
     return registry.getValue("languages");
@@ -408,6 +467,20 @@ Future<WidgetData> initialSteps() async{
     show_date_picker_fun.key: show_date_picker_fun.body,
     show_time_picker_fun.key: show_time_picker_fun.body,
     show_file_picker_fun.key: show_file_picker_fun.body,
+    'addDynamically': ({args, required registry}) => () {
+      print("add-${args![2]}");
+      if(registry.getValue("items-${args![2]}").length < args[1]){
+        args[0]();
+      }
+      print(registry.values);
+    },
+    'removeDynamically': ({args, required registry}) => () {
+      print("remove-${args![2]}");
+      if(registry.getValue("items-${args![2]}").length > args[1]){
+        args[0]();
+      }
+      print(registry.values);
+    },
     'validateForm': ({args, required registry}) => () {
       final BuildContext context = registry.getValue(args![0]);
       Map<String, dynamic> values = {};
@@ -415,13 +488,30 @@ Future<WidgetData> initialSteps() async{
       print(registryValues);
       Map<String, dynamic> selectableValues = {};
       Map<String, dynamic> dropdownValues = {};
+      Map<String, dynamic> arrayValues = {};
       registryValues.keys.forEach((element) {
         if(element.startsWith('selectable-')){
           selectableValues[element.substring(element.indexOf('selectable-')+ 'selectable-'.length, element.length)] = registryValues[element];
         }else if(element.startsWith('dropdown-')){
           dropdownValues[element] = registryValues[element];
+        }else if(element.startsWith('array-')){
+          arrayValues[element] = [];
         }
       });
+
+      for(String key in arrayValues.keys.map((e) => e.substring(e.indexOf('array-')+ 'array-'.length, e.length))){
+        print(key);
+        if(registryValues.keys.contains("items-$key")){
+          print("items-$key");
+          for (String id in registry.getValue("items-$key").map((e) => e["id"])){
+            arrayValues["array-$key"].add(registryValues["edit${toBeginningOfSentenceCase(key)}$id"]);
+            //print("edit${toBeginningOfSentenceCase(key)}$id");
+          }
+          if(arrayValues["array-$key"].isNotEmpty){
+            values[key] = arrayValues["array-$key"];
+          }
+        }
+      }
       for(String key in registryValues.keys){
         if(key.startsWith("edit") && !key.endsWith(".error")){
           String attributeName = key.substring(key.indexOf("edit")+4, key.indexOf("edit")+5).toLowerCase() + key.substring(key.indexOf("edit")+5, key.length);
@@ -434,7 +524,27 @@ Future<WidgetData> initialSteps() async{
               }
             }
           }else{
-            values[attributeName] = registryValues[key];
+            int counter = 0;
+
+
+
+            // print("items-$attributeName");
+            // if(registryValues.keys.contains("items-$attributeName")){
+            //   for (String id in registry.getValue("items-$attributeName").map((e) => e["id"])){
+            //     print("edit${toBeginningOfSentenceCase(attributeName)}$id");
+            //   }
+            // }
+
+            for(String key in arrayValues.keys.map((e) => e.substring(e.indexOf('array-')+ 'array-'.length, e.length))){
+              if(attributeName.contains(key)){
+                //arrayValues["array-$key"].add(registryValues["edit${toBeginningOfSentenceCase(attributeName)}"]);
+                //values[key] = arrayValues["array-$key"];
+                counter = 1;
+              }
+            }
+            if(counter == 0){
+              values[attributeName] = registryValues[key];
+            }
           }
         }
       }

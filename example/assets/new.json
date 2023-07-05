@@ -1,0 +1,84 @@
+{
+  "type": "dynamic",
+  "id": "items",
+  "args": {
+    "dynamic": {
+      "builderType": "list_view",
+      "childTemplate": {
+        "type": "set_value",
+        "args": {
+          "remove{id}Element": {
+            "type": "remove",
+            "builder": "items",
+            "target": {
+              "id": "{id}"
+            }
+          }
+        },
+        "child": {
+          "id": "{id}",
+          "type": "row",
+          "children": [
+            {
+              "type":"container",
+              "args": {
+                "width": 300
+              },
+              "children":[
+                {
+                  "type":"set_value",
+                  "children":[
+                    {
+                      "type":"dropdown_button_form_field",
+                      "id":"edit{id}",
+                      "args":{
+                        "decoration":{
+                          "border":{
+                            "type":"outline",
+                            "width":2
+                          }
+                        },
+                        "validators":[
+                          {
+                            "type":"required"
+                          }
+                        ],
+                        "isExpanded":"true",
+                        "items":["yes", "no"]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "icon_button",
+              "args": {
+                "icon": {
+                  "type": "icon",
+                  "args": {
+                    "icon": {
+                      "codePoint": 58646,
+                      "fontFamily": "MaterialIcons",
+                      "size": 50
+                    }
+                  }
+                },
+                "onPressed": "${removeDynamically(dynamic('remove{id}Element'))}"
+              }
+            }
+          ],
+          "args": {
+            "mainAxisAlignment" : "spaceBetween"
+          }
+        }
+      },
+      "initState": [
+        {
+          "id": "1"
+        }
+      ]
+    },
+    "shrinkWrap" : "true"
+  }
+}

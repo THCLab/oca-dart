@@ -14,7 +14,7 @@ import 'package:oca_dart/widget_data.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/version03.json'), "Idabiugeaiuy8728637gea9aghewe");
+  WidgetData widgetData = await OcaDartPlugin.getWidgetData(await rootBundle.loadString('assets/version03new.json'), "Idabiugeaiuy8728637gea9aghewe");
   runApp(MaterialApp(home: MyApp(widgetData: widgetData)));
 }
 
