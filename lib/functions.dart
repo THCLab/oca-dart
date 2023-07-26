@@ -429,11 +429,17 @@ Widget? renderWidgetData (WidgetData widgetData, BuildContext context) {
 //Gets the widget data of the form to render
 Future<WidgetData> getWidgetData (String json, String issuerId) async{
   WidgetData firstWidgetData = await initialSteps();
+  print("przeszło initial");
   final OcaBundle bundle = await OcaDartPlugin.loadOca(json: json);
+  print("przeszło loadOca");
   final String ocaBundle = await bundle.toJson();
+  print("przeszło toJson");
   final ocaMap = jsonDecode(ocaBundle);
+  print("przeszło decode");
   var jsonData = await getFormFromAttributes(ocaMap, firstWidgetData.registry, issuerId);
+  print("przeszło getFormFromAttributes");
   WidgetData widgetData = WidgetData(registry: firstWidgetData.registry, jsonData: jsonData);
+  print("przeszło widgetData");
   return widgetData;
 }
 
