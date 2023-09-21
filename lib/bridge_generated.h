@@ -9,6 +9,11 @@ typedef int64_t DartPort;
 
 typedef bool (*DartPostCObjectFnType)(DartPort port_id, void *message);
 
+typedef struct wire_uint_8_list {
+  uint8_t *ptr;
+  int32_t len;
+} wire_uint_8_list;
+
 typedef struct wire_MutexOcaBoxRaw {
   const void *ptr;
 } wire_MutexOcaBoxRaw;
@@ -16,11 +21,6 @@ typedef struct wire_MutexOcaBoxRaw {
 typedef struct wire_OcaBox {
   struct wire_MutexOcaBoxRaw field0;
 } wire_OcaBox;
-
-typedef struct wire_uint_8_list {
-  uint8_t *ptr;
-  int32_t len;
-} wire_uint_8_list;
 
 typedef struct wire_MutexOcaAttrRaw {
   const void *ptr;
@@ -70,6 +70,8 @@ void drop_dart_object(uintptr_t ptr);
 uintptr_t new_dart_opaque(Dart_Handle handle);
 
 intptr_t init_frb_dart_api_dl(void *obj);
+
+void wire_load_oca(int64_t port_, struct wire_uint_8_list *json);
 
 void wire_new__static_method__OcaBox(int64_t port_);
 
@@ -226,6 +228,7 @@ void free_WireSyncReturn(WireSyncReturn ptr);
 
 static int64_t dummy_method_to_enforce_bundling(void) {
     int64_t dummy_var = 0;
+    dummy_var ^= ((int64_t) (void*) wire_load_oca);
     dummy_var ^= ((int64_t) (void*) wire_new__static_method__OcaBox);
     dummy_var ^= ((int64_t) (void*) wire_add_meta__method__OcaBox);
     dummy_var ^= ((int64_t) (void*) wire_add_attribute__method__OcaBox);

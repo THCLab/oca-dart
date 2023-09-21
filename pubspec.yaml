@@ -1,17 +1,17 @@
 name: oca_dart
 description: A flutter plugin for OCA architecture
-version: 0.0.3
+version: 0.1.0
 homepage:
 
 environment:
-  sdk: '>=2.19.2 <4.0.0'
+  sdk: '>=3.0.6 <4.0.0'
   flutter: ">=2.5.0"
 
 dependencies:
   file_picker: ^5.2.5
   flutter:
     sdk: flutter
-  flutter_rust_bridge: ^1.71.1
+  flutter_rust_bridge: ^1.82.1
   form_validation: ^2.2.0+6
   http: ^0.13.5
   json_dynamic_widget: ^6.0.4+3
